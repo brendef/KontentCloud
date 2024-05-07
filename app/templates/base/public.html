@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script src="https://unpkg.com/htmx.org@1.9.12"></script> <!-- htmx -->
+    <link rel="icon" type="image/x-icon" href="../../static/images/favicon.ico">
+    <title> {% block title %} {% endblock %} | Saftey Scroll</title>
+</head>
+
+<body>
+    {% block content %}{% endblock %}
+</body>
+
+<script src="../../static/js/functions.js"></script>
+<script>
+    let ttlCookie = readCookie("tokenTtl");
+    if (ttlCookie && window.location.pathname === "/login") {
+        window.location.href = "/search";
+    }
+</script>
+
+</html>
