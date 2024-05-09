@@ -1,0 +1,15 @@
+{% extends 'base/protected.html' %}
+
+{% block title %} Profile {% endblock %}
+
+{% block content %}
+
+{% for image in feed.data %}
+
+    {% if image.media_type == "IMAGE" %}
+        <img src="{{ image.media_url }}" alt="" width="100" height="100" />
+    {% endif %}
+
+{% endfor %}
+
+{% endblock %}

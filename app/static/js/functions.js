@@ -12,3 +12,9 @@ function readCookie(name) {
     
     return value
 }
+
+function logout() {
+    document.cookie = 'tokenTtl=; expires=Thu, 01 Jan 1970 00:00:00 UTC;';
+    document.cookie = 'longToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC;';
+    location.reload();
+}

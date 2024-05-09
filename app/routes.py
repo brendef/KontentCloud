@@ -22,18 +22,12 @@ def login(request: Request):
     return templates.TemplateResponse(request=request, name="pages/login.html")
 
 
-# search for a user but for now is where user is redirected after login
-@router.get("/search")
-def home(request: Request):
-    return templates.TemplateResponse(request=request, name="pages/search.html")
-
-
 # redirect url for isntagram authorization
 @router.get("/auth")
 async def auth(code: str):
 
     redirectUri = "https://localhost:8000/auth/"  # the same as this end point
-    instagram = Instagram(redirectUri, code)
+    instagram = Instagram(redirectUri=redirectUri, code=code)
 
     shortToken = instagram.get_token()
     longTokenResponse = instagram.exchange_token(shortToken)
@@ -42,7 +36,7 @@ async def auth(code: str):
     ttl = longTokenResponse["ttl"]  # time to live / expires in seconds
 
     # Set cookie for long lived token
-    response = RedirectResponse(url="/search")
+    response = RedirectResponse(url="/feed")
     response.set_cookie(
         key="longToken",
         value=longToken,
@@ -61,3 +55,28 @@ async def auth(code: str):
     )
 
     return response
+
+
+@router.get("/logout")
+def logout():
+
+    response = RedirectResponse(url="/login")
+
+    response.delete_cookie(key="longToken")
+    response.delete_cookie(key="tokenTtl")
+
+    return response
+
+
+@router.get("/feed")
+def home(request: Request):
+
+    # get the cookie from the request
+    cookieLongToken = request.cookies.get("longToken")
+
+    instagram = Instagram(token=cookieLongToken)
+    feed = instagram.get_feed()
+
+    return templates.TemplateResponse(
+        request=request, name="pages/feed.html", context={"feed": feed}
+    )

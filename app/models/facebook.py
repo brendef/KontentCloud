@@ -7,16 +7,25 @@ class Instagram:
     ClientId = os.getenv("INSTAGRAM_CLIENT_ID")
     ClientSecret = os.getenv("INSTAGRAM_SECRET")
 
-    ApiInstagram = "https://api.instagram.com/oauth/access_token"
-    GraphInstagram = "https://graph.instagram.com/access_token"
+    ApiInstagramURL = "https://api.instagram.com/oauth/access_token"
+    GraphInstagramURL = "https://graph.instagram.com/access_token"
+    GraphMediaURL = "https://graph.instagram.com/me/media"
+    GraphUserURL = "https://graph.instagram.com/me"
 
-    def __init__(self, url, code):
-        self.RedirectUri = url
-        self.code: str = code
+    def __init__(self, **kwargs):
+
+        if "token" in kwargs.keys():
+            self.token = kwargs["token"]
+
+        if "code" in kwargs.keys():
+            self.code = kwargs["code"]
+
+        if "redirectUri" in kwargs.keys():
+            self.RedirectUri = kwargs["redirectUri"]
 
     def get_token(self):
 
-        url = self.ApiInstagram
+        url = self.ApiInstagramURL
         payload = {
             "client_id": self.ClientId,
             "client_secret": self.ClientSecret,
@@ -37,7 +46,7 @@ class Instagram:
             print("Short token is None")
             return None
 
-        url = self.GraphInstagram
+        url = self.GraphInstagramURL
         params = {
             "grant_type": "ig_exchange_token",
             "client_secret": self.ClientSecret,
@@ -49,3 +58,29 @@ class Instagram:
         ttl = response.json()["expires_in"]
 
         return dict(longToken=longToken, ttl=ttl)
+
+    def get_user(self):
+
+        url = self.GraphUserURL
+        params = {"fields": "id,username", "access_token": self.token}
+
+        response = requests.get(url, params=params)
+        user = response.json()
+
+        return user
+
+    def get_feed(self):
+
+        url = self.GraphMediaURL
+        params = {
+            "fields": "id,username,media_type,media_url,caption",
+            "access_token": self.token,
+        }
+
+        response = requests.get(url, params=params)
+        try:
+            feed = response.json()
+        except:
+            feed = None
+
+        return feed
