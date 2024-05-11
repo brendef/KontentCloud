@@ -1,5 +1,3 @@
-import os
-
 from routes import router
 from dotenv import load_dotenv
 

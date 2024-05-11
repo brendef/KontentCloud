@@ -4,13 +4,13 @@ import requests
 
 class Instagram:
 
-    ClientId = os.getenv("INSTAGRAM_CLIENT_ID")
-    ClientSecret = os.getenv("INSTAGRAM_SECRET")
+    CLIENT_ID = os.getenv("INSTAGRAM_CLIENT_ID")
+    CLIENT_SECRET = os.getenv("INSTAGRAM_SECRET")
 
-    ApiInstagramURL = "https://api.instagram.com/oauth/access_token"
-    GraphInstagramURL = "https://graph.instagram.com/access_token"
-    GraphMediaURL = "https://graph.instagram.com/me/media"
-    GraphUserURL = "https://graph.instagram.com/me"
+    API_INSTAGRAM_URL = "https://api.instagram.com/oauth/access_token"
+    GRAPH_INSTAGRAM_URL = "https://graph.instagram.com/access_token"
+    GRAPH_MEDIA_URL = "https://graph.instagram.com/me/media"
+    GRAPH_USER_URL = "https://graph.instagram.com/me"
 
     def __init__(self, **kwargs):
 
@@ -25,16 +25,17 @@ class Instagram:
 
     def get_token(self):
 
-        url = self.ApiInstagramURL
+        url = self.API_INSTAGRAM_URL
         payload = {
-            "client_id": self.ClientId,
-            "client_secret": self.ClientSecret,
+            "client_id": self.CLIENT_ID,
+            "client_secret": self.CLIENT_SECRET,
             "grant_type": "authorization_code",
             "redirect_uri": self.RedirectUri,
             "code": self.code,
         }
 
         response = requests.post(url, data=payload)
+
         shortToken = response.json()["access_token"]
 
         return shortToken
@@ -46,10 +47,10 @@ class Instagram:
             print("Short token is None")
             return None
 
-        url = self.GraphInstagramURL
+        url = self.GRAPH_INSTAGRAM_URL
         params = {
             "grant_type": "ig_exchange_token",
-            "client_secret": self.ClientSecret,
+            "client_secret": self.CLIENT_SECRET,
             "access_token": shortToken,
         }
 
@@ -61,8 +62,11 @@ class Instagram:
 
     def get_user(self):
 
-        url = self.GraphUserURL
-        params = {"fields": "id,username", "access_token": self.token}
+        url = self.GRAPH_USER_URL
+        params = {
+            "fields": "id,username,account_type,media_count",
+            "access_token": self.token,
+        }
 
         response = requests.get(url, params=params)
         user = response.json()
@@ -71,16 +75,20 @@ class Instagram:
 
     def get_feed(self):
 
-        url = self.GraphMediaURL
+        url = self.GRAPH_MEDIA_URL
         params = {
             "fields": "id,username,media_type,media_url,caption",
             "access_token": self.token,
         }
 
         response = requests.get(url, params=params)
-        try:
-            feed = response.json()
-        except:
-            feed = None
+        feed = response.json()
+
+        return feed
+
+    def get_next_feed(self, url: str):
+
+        response = requests.get(url)
+        feed = response.json()
 
         return feed
