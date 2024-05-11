@@ -26,7 +26,7 @@
                     </svg>
                 </button>
 
-                <button
+                <button hx-on:click="download()"
                     class="block rounded-lg bg-indigo-600 px-5 py-3 text-sm font-medium text-white transition hover:bg-indigo-700 focus:outline-none focus:ring"
                     type="button">
                     Download
@@ -45,7 +45,9 @@
         {% for image in feed.data %}
 
         {% if image.media_type != "VIDEO" %}
-        <img src="{{ image.media_url }}" alt="" />
+        <div id="{{ loop.index }}" hx-on:click="selectImage('{{ image.media_url }}', this.id)"> <img
+                src="{{ image.media_url }}" alt="" />
+        </div>
         {% endif %}
 
         {% endfor %}
@@ -70,5 +72,22 @@
 
     </div>
 </div>
+
+<script>
+    let selectedImages = []
+    function selectImage(url, id) {
+        if (selectedImages.includes(url)) {
+            selectedImages = selectedImages.filter(item => item !== url)
+            document.getElementById(id).classList.remove('image-selected-border')
+        } else {
+            selectedImages.push(url)
+            document.getElementById(id).classList.add('image-selected-border')
+        }
+    }
+
+    function download() {
+        console.log(selectedImages)
+    }
+</script>
 
 {% endblock %}

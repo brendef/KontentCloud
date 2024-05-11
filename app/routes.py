@@ -107,11 +107,11 @@ def feed_htmx(request: Request, nextUrl: str):
 
     htmlResponse = ""
 
-    for image in feed["data"]:
+    for num, image in enumerate(feed["data"]):
         if image["media_type"] == "VIDEO":
             continue
 
-        htmlResponse += f"""<img src="{image["media_url"]}" alt="" />"""
+        htmlResponse += f"""<div id="{num+1003302*123}" hx-on:click="selectImage('{{ image.media_url }}', this.id)"> <img src="{image["media_url"]}" alt="" /> </div>"""
 
     if "next" in feed["paging"]:
         htmlResponse += f"""<div hx-get="/get-feed" hx-vars="{{ 'nextUrl':'{feed["paging"]["next"]}' }}" hx-trigger="revealed" hx-swap="outerHTML">
