@@ -45,8 +45,8 @@
         {% for image in feed.data %}
 
         {% if image.media_type != "VIDEO" %}
-        <div id="{{ loop.index }}" hx-on:click="selectImage('{{ image.media_url }}', this.id)"> <img
-                src="{{ image.media_url }}" alt="" />
+        <div id="{{ loop.index }}" class="image">
+            <img src="{{ image.media_url }}" alt="" />
         </div>
         {% endif %}
 
@@ -74,14 +74,22 @@
 </div>
 
 <script>
+
     let selectedImages = []
-    function selectImage(url, id) {
+
+    document.querySelectorAll('.image').forEach((e) => {
+        e.addEventListener('click', (e) => {
+            selectImage(e.srcElement.src, e.target)
+        })
+    })
+
+    const selectImage = (url, element) => {
         if (selectedImages.includes(url)) {
             selectedImages = selectedImages.filter(item => item !== url)
-            document.getElementById(id).classList.remove('image-selected-border')
+            element.classList.remove('image-selected-border')
         } else {
             selectedImages.push(url)
-            document.getElementById(id).classList.add('image-selected-border')
+            element.classList.add('image-selected-border')
         }
     }
 

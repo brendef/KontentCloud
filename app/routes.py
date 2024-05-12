@@ -1,3 +1,5 @@
+import uuid
+
 from datetime import datetime, timedelta, timezone
 
 from fastapi import APIRouter, Request
@@ -107,11 +109,21 @@ def feed_htmx(request: Request, nextUrl: str):
 
     htmlResponse = ""
 
-    for num, image in enumerate(feed["data"]):
+    for image in feed["data"]:
         if image["media_type"] == "VIDEO":
             continue
 
-        htmlResponse += f"""<div id="{num+1003302*123}" hx-on:click="selectImage('{{ image.media_url }}', this.id)"> <img src="{image["media_url"]}" alt="" /> </div>"""
+        imageuuid = str(uuid.uuid4())
+        htmlResponse += f"""
+        
+            <div id="a{imageuuid}" class="image"> <img src="{image["media_url"]}" alt="" /> </div>
+            <script>
+                document.getElementById("a{imageuuid}").addEventListener('click', (e) => {{
+                        selectImage(e.srcElement.src, e.target)
+                    }}
+                )
+            </script>
+        """
 
     if "next" in feed["paging"]:
         htmlResponse += f"""<div hx-get="/get-feed" hx-vars="{{ 'nextUrl':'{feed["paging"]["next"]}' }}" hx-trigger="revealed" hx-swap="outerHTML">
@@ -125,6 +137,6 @@ def feed_htmx(request: Request, nextUrl: str):
                 </div>
             </div>
         </div>
-        """
+    """
 
     return HTMLResponse(content=htmlResponse)
