@@ -1,4 +1,5 @@
 import os
+import shutil
 import zipfile
 
 
@@ -18,3 +19,11 @@ def zipFolder(pathToZip, folderToZip):
                     os.path.join(root, file),
                     os.path.relpath(os.path.join(root, file), folderToZip),
                 )
+
+
+def deleteFolder(folder):
+    print("Deleting folder " + folder)
+    try:
+        shutil.rmtree(folder, ignore_errors=True)
+    except OSError as error:
+        print(f"Error: Deleting directory {folder}: {error}")

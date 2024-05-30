@@ -95,7 +95,7 @@
 
     function download() {
 
-        var ws = new WebSocket("/download-zip");
+        var ws = new WebSocket("/download-images/ws");
 
         ws.onopen = function (event) {
             ws.send(JSON.stringify({ "links": selectedImages }))
@@ -103,6 +103,10 @@
 
         ws.onmessage = function (event) {
             console.log(event.data)
+        }
+
+        ws.onclose = function (event) {
+            window.open("/download-zip", "_blank");
         }
 
     }

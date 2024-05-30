@@ -1,13 +1,13 @@
-import uuid, json, zipfile, requests, os
+import uuid, json, requests, os
 
 from datetime import datetime, timedelta, timezone
 
-from fastapi import APIRouter, Request, WebSocket
-from fastapi.responses import RedirectResponse, HTMLResponse
+from fastapi import APIRouter, Request, WebSocket, BackgroundTasks
+from fastapi.responses import RedirectResponse, HTMLResponse, FileResponse
 from fastapi.templating import Jinja2Templates
 
 from models.facebook import Instagram
-from lib.io import createFolder, zipFolder
+from lib.io import createFolder, zipFolder, deleteFolder
 
 router = APIRouter()  # init app router
 templates = Jinja2Templates(directory="templates")  # load html templates
@@ -146,8 +146,19 @@ def feed_htmx(request: Request, nextUrl: str):
 # Websocket route
 
 
-@router.websocket("/download-zip")
-async def download_zip(websocket: WebSocket):
+@router.get("/download-zip")
+def download_zip(request: Request, background_tasks: BackgroundTasks):
+
+    userLongToken = request.cookies.get(LONG_TOKEN)
+    zipFileLocation = f"tmp/{userLongToken}.zip"
+
+    background_tasks.add_task(os.remove, zipFileLocation)
+
+    return FileResponse(path=zipFileLocation, filename="instagram_images.zip")
+
+
+@router.websocket("/download-images/ws")
+async def download_images(websocket: WebSocket):
     print("Websocket connection opened")
     await websocket.accept()
 
@@ -202,12 +213,8 @@ async def download_zip(websocket: WebSocket):
         responseZipFile = f"{tempImageFolder}.zip"
         zipFolder(responseZipFile, tempImageFolder)
 
-        # TODO: delete the folder with the images
-        # TODO: send the zip file to the client
-        # TODO: delete the zip file
+        # delete the folder containing the images
+        deleteFolder(tempImageFolder)
 
-        await websocket.send_text("Download complete")
         await websocket.close()
         break
-
-    print("Websocket connection closed")
