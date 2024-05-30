@@ -1,12 +1,13 @@
-import uuid
+import uuid, json, zipfile, requests, os
 
 from datetime import datetime, timedelta, timezone
 
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Request, WebSocket
 from fastapi.responses import RedirectResponse, HTMLResponse
 from fastapi.templating import Jinja2Templates
 
 from models.facebook import Instagram
+from lib.io import createFolder, zipFolder
 
 router = APIRouter()  # init app router
 templates = Jinja2Templates(directory="templates")  # load html templates
@@ -98,7 +99,7 @@ def feed_template(request: Request):
     )
 
 
-@router.get("/get-feed/")
+@router.get("/get-feed")
 def feed_htmx(request: Request, nextUrl: str):
 
     # get the cookie from the request
@@ -140,3 +141,73 @@ def feed_htmx(request: Request, nextUrl: str):
     """
 
     return HTMLResponse(content=htmlResponse)
+
+
+# Websocket route
+
+
+@router.websocket("/download-zip")
+async def download_zip(websocket: WebSocket):
+    print("Websocket connection opened")
+    await websocket.accept()
+
+    userLongToken = websocket.cookies.get(LONG_TOKEN)
+
+    while True:
+        jsonMessage = await websocket.receive_text()
+        data = json.loads(jsonMessage)
+
+        # if there are no links, close the connecton
+        if data.get("links") is None:
+            await websocket.close()
+            break
+
+        # if the close flag is set, close the connection
+        if data.get("close") is not None and data["close"] == True:
+            await websocket.close()
+            break
+
+        links = data["links"]
+        linksAmount = len(links)
+
+        tempImageFolder = f"tmp/{userLongToken}"
+        createFolder(tempImageFolder)
+
+        # notify the client that the download is starting and how many images are being downloaded
+        await websocket.send_text(f"Downloading {linksAmount} images")
+
+        for num, link in enumerate(links):
+
+            try:
+                # download the image
+                response = requests.get(link)
+                response.raise_for_status()
+
+                # get the first part of the link which will be used as the name of the file
+                extractedName = link.split("?")[0]
+                filename = os.path.join(
+                    tempImageFolder, os.path.basename(extractedName)
+                )
+
+                with open(filename, "wb") as file:
+                    file.write(response.content)
+
+            except requests.exceptions.RequestException as e:
+                print(f"Error downloading {link}: {e}")
+
+            # respond with the progress
+            await websocket.send_text(str(num))  # TODO: improve this
+
+        # zip the folder containing all the downloaded images
+        responseZipFile = f"{tempImageFolder}.zip"
+        zipFolder(responseZipFile, tempImageFolder)
+
+        # TODO: delete the folder with the images
+        # TODO: send the zip file to the client
+        # TODO: delete the zip file
+
+        await websocket.send_text("Download complete")
+        await websocket.close()
+        break
+
+    print("Websocket connection closed")

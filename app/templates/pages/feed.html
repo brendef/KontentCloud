@@ -94,8 +94,19 @@
     }
 
     function download() {
-        console.log(selectedImages)
+
+        var ws = new WebSocket("/download-zip");
+
+        ws.onopen = function (event) {
+            ws.send(JSON.stringify({ "links": selectedImages }))
+        }
+
+        ws.onmessage = function (event) {
+            console.log(event.data)
+        }
+
     }
+
 </script>
 
 {% endblock %}
