@@ -1,0 +1,10 @@
+{% extends 'base/protected.html' %}
+{% block title %} Home {% endblock %}
+
+{% block content %}
+
+<a
+    href="https://api.instagram.com/oauth/authorize?client_id=1651199432381998&redirect_uri=https://localhost:8000/auth/&scope=user_profile,user_media&response_type=code">
+    Authorise Instagram </a>
+
+{% endblock %}

@@ -18,7 +18,7 @@ TOKEN_TTL = "tokenTtl"
 TTL = "ttl"
 
 # Redirect Constants
-LoginRedirect = "/feed"
+LoginRedirect = "/home"
 LoggedOutRedirect = "/login"
 
 
@@ -77,10 +77,22 @@ def index_template(request: Request):
     return templates.TemplateResponse(request=request, name="pages/index.html")
 
 
+# where user clicks to signup
+@router.get("/signup")
+def signup_template(request: Request):
+    return templates.TemplateResponse(request=request, name="pages/signup.html")
+
+
 # where user clicks to login
 @router.get("/login")
 def login_template(request: Request):
     return templates.TemplateResponse(request=request, name="pages/login.html")
+
+
+# where user clicks to login
+@router.get("/home")
+def home_template(request: Request):
+    return templates.TemplateResponse(request=request, name="pages/home.html")
 
 
 # display the users instagram feed, once authenticated
