@@ -18,15 +18,22 @@ class Supabase:
 
         # pass the email and password to the supabase function as credentials dictionary
         credentials = {"email": email, "password": password}
-        user = self.supabase.auth.sign_up(credentials)
+
+        try:
+            user = self.supabase.auth.sign_up(credentials)
+        except Exception as e:
+            raise Exception(e)
 
         return user
 
     def login(self, email: str, password: str):
 
         # supabase function
-        user = self.supabase.auth.sign_in_with_password(
-            {"email": email, "password": password}
-        )
+        credentials = {"email": email, "password": password}
+
+        try:
+            user = self.supabase.auth.sign_in_with_password(credentials)
+        except Exception as e:
+            raise Exception(e)
 
         return user

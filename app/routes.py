@@ -260,7 +260,8 @@ async def create_user(request: Request):
 
     if error is not None:
         response = HTMLResponse(
-            content=f"""<p id="errors">{error}</p>""", status_code=400
+            content=f"""<p id="errors" class="col-span-6 text-red-500">{error}</p>""",
+            status_code=400,
         )
 
     if user is not None and error is None:
@@ -311,7 +312,8 @@ async def sign_user(request: Request):
 
     if error is not None:
         response = HTMLResponse(
-            content=f"""<p id="errors">{error}</p>""", status_code=400
+            content=f"""<p id="errors" class="col-span-6 text-red-500">{error}</p>""",
+            status_code=400,
         )
 
     if user is not None and error is None:

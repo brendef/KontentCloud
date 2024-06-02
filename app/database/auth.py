@@ -25,6 +25,15 @@ class Auth:
             self.auth = Supabase()
 
     def login(self, email: str, password: str):
+
+        if (emailMessage := validate_email(email)) and len(emailMessage) > 0:
+            raise Exception(f"Invalid email: {emailMessage}")
+
+        if (passwordMessage := validate_password(password)) and len(
+            passwordMessage
+        ) > 0:
+            raise Exception(f"Invalid password: {passwordMessage}")
+
         return self.auth.login(email, password)
 
     def signup(self, email: str, password: str, confirm_password: str):
