@@ -21,8 +21,8 @@
 
 <script src="../../static/js/functions.js"></script>
 <script>
-    let ttlCookie = readCookie("tokenTtl");
-    if (!ttlCookie) {
+    let jwt_ttl = readCookie("jwt_ttl");
+    if (!jwt_ttl) {
         window.location.href = "/login";
     } 
 </script>

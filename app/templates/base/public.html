@@ -19,9 +19,10 @@
 
 <script src="../../static/js/functions.js"></script>
 <script>
-    let ttlCookie = readCookie("tokenTtl");
-    if (ttlCookie && window.location.pathname === "/login") {
-        window.location.href = "/feed";
+    let jwt_ttl = readCookie("jwt_ttl");
+    console.log(jwt_ttl);
+    if (jwt_ttl && window.location.pathname === "/login") {
+        window.location.href = "/home";
     }
 </script>
 

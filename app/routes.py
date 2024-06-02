@@ -2,9 +2,7 @@ import uuid, json, requests, os
 
 from datetime import datetime, timedelta, timezone
 
-from typing import Annotated
-
-from fastapi import APIRouter, Request, WebSocket, BackgroundTasks, Form
+from fastapi import APIRouter, Request, WebSocket, BackgroundTasks
 from fastapi.responses import RedirectResponse, HTMLResponse, FileResponse
 from fastapi.templating import Jinja2Templates
 
@@ -21,6 +19,7 @@ LONG_TOKEN = "longToken"
 TOKEN_TTL = "tokenTtl"
 TTL = "ttl"
 JWT = "jwt"
+JWT_TTL = "jwt_ttl"
 
 # Redirect Constants
 LoginRedirect = "/home"
@@ -242,58 +241,93 @@ async def create_user(request: Request):
 
     form = await request.form()
 
+    # extract fields from the sign up form
     email = form.get("email", "").lower().strip()
     password = form.get("password", "").strip()
     confirm_password = form.get("confirm_password", "").strip()
 
+    # initalise auth settings
     auth = Auth(service="supabase")
 
-    if email == "":
-        return HTMLResponse(
-            content=f"""<p id="errors">Email is required</p>""", status_code=400
-        )
-
-    if password == "":
-        return HTMLResponse(
-            content=f"""<p id="errors">Password is required</p>""", status_code=400
-        )
-
-    if password != confirm_password:
-        return HTMLResponse(
-            content=f"""<p id="errors">Passwords do not match</p>""", status_code=400
-        )
+    user = None  # user object if registration is successful
+    error: str = None  # error message if registration fails
+    response: HTMLResponse | RedirectResponse = None  # response object
 
     try:
-        user = auth.signup(email, password)
-    except Exception as e:
-        return HTMLResponse(
-            content=f"""<p id="errors">Error signing up: {e}</p>""", status_code=400
-        )
+        user = auth.signup(email, password, confirm_password)
+    except Exception as exception:
+        error = exception
 
-    if user.session is not None and user.session.access_token is not None:
+    if error is not None:
         response = HTMLResponse(
-            content="""
-            <div class="flex flex-col justify-center items-center" id="success" hx-swap-oob="outerHTML">
-                <h4> Account created successfully </h4>
-                <a
-                class="border border-black bg-black px-12 py-3 text-sm font-medium text-white hover:bg-gray-200 focus:outline-none focus:ring"
-                href="/home"
-                > Go to dashboard!</a>
-            <div>
-
-        """
+            content=f"""<p id="errors">{error}</p>""", status_code=400
         )
-    response.set_cookie(
-        key=JWT,
-        value=user.session.access_token,
-        secure=True,
-        httponly=True,
-    )
+
+    if user is not None and error is None:
+        response = RedirectResponse(url=LoginRedirect, status_code=303)
+
+        response.set_cookie(
+            key=JWT,
+            value=user.session.access_token,
+            expires=user.session.expires_in,
+            secure=True,
+            httponly=True,
+        )
+
+        response.set_cookie(
+            key=JWT_TTL,
+            value=JWT_TTL,
+            expires=user.session.expires_in,
+            secure=True,
+            httponly=False,
+        )
 
     return response
 
 
 @router.post("/auth/sign-user")
-def sign_user():
+async def sign_user(request: Request):
 
-    return "User Signed In"
+    form = await request.form()
+
+    # extract fields from the sign up form
+    email = form.get("email", "").lower().strip()
+    password = form.get("password", "").strip()
+
+    # initalise auth settings
+    auth = Auth(service="supabase")
+
+    user = None  # user object if sign in is successful
+    error: str = None
+    response: RedirectResponse | HTMLResponse = None
+
+    try:
+        user = auth.login(email, password)
+    except Exception as exception:
+        error = exception
+
+    if error is not None:
+        response = HTMLResponse(
+            content=f"""<p id="errors">{error}</p>""", status_code=400
+        )
+
+    if user is not None and error is None:
+        response = RedirectResponse(url=LoginRedirect, status_code=302)
+
+        response.set_cookie(
+            key=JWT,
+            value=user.session.access_token,
+            expires=user.session.expires_in,
+            secure=True,
+            httponly=True,
+        )
+
+        response.set_cookie(
+            key=JWT_TTL,
+            value=user.session.expires_in,
+            expires=user.session.expires_in,
+            secure=True,
+            httponly=False,
+        )
+
+    return response

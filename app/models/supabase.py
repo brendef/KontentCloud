@@ -16,28 +16,13 @@ class Supabase:
 
     def signup(self, email: str, password: str):
 
-        # TODO: Implement validation
-        if email is None or password is None:
-            print("Email or Password is None")
-            return None
-
-        # TODO: Implement validation
-        if len(password) < 8:
-            print("Password is too short")
-            return None
-
-        # supabase expects the credentials to be in the form of a dictionary
+        # pass the email and password to the supabase function as credentials dictionary
         credentials = {"email": email, "password": password}
         user = self.supabase.auth.sign_up(credentials)
 
         return user
 
     def login(self, email: str, password: str):
-
-        # TODO: Implement validation
-        if email is None or password is None:
-            print("Email or Password is None")
-            return None
 
         # supabase function
         user = self.supabase.auth.sign_in_with_password(
