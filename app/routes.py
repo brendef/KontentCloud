@@ -251,7 +251,7 @@ async def create_user(request: Request):
 
     user = None  # user object if registration is successful
     error: str = None  # error message if registration fails
-    response: HTMLResponse | RedirectResponse = None  # response object
+    response: HTMLResponse = None  # response object
 
     try:
         user = auth.signup(email, password, confirm_password)
@@ -264,7 +264,10 @@ async def create_user(request: Request):
         )
 
     if user is not None and error is None:
-        response = RedirectResponse(url=LoginRedirect, status_code=303)
+        response = HTMLResponse()
+
+        response.status_code = 303
+        response.headers.update({"HX-Redirect": "/home"})
 
         response.set_cookie(
             key=JWT,
@@ -276,7 +279,7 @@ async def create_user(request: Request):
 
         response.set_cookie(
             key=JWT_TTL,
-            value=JWT_TTL,
+            value=user.session.expires_in,
             expires=user.session.expires_in,
             secure=True,
             httponly=False,
@@ -299,7 +302,7 @@ async def sign_user(request: Request):
 
     user = None  # user object if sign in is successful
     error: str = None
-    response: RedirectResponse | HTMLResponse = None
+    response: HTMLResponse = None
 
     try:
         user = auth.login(email, password)
@@ -312,7 +315,10 @@ async def sign_user(request: Request):
         )
 
     if user is not None and error is None:
-        response = RedirectResponse(url=LoginRedirect, status_code=302)
+        response = HTMLResponse()
+
+        response.status_code = 303
+        response.headers.update({"HX-Redirect": "/home"})
 
         response.set_cookie(
             key=JWT,
