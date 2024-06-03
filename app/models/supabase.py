@@ -37,3 +37,12 @@ class Supabase:
             raise Exception(e)
 
         return user
+
+    def getuser(self, token: str):
+
+        try:
+            user = self.supabase.auth.get_user(token)
+        except Exception as e:
+            raise Exception(e)
+
+        return user

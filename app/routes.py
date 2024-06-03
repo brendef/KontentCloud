@@ -24,13 +24,16 @@ JWT_TTL = "jwt_ttl"
 # Redirect Constants
 LoginRedirect = "/home"
 LoggedOutRedirect = "/login"
+InstagramFeed = "/instagram-feed"
 
 
 # redirect url for isntagram authorization
-@router.get("/auth")
-async def auth(code: str):
+@router.get("/authorise-instagram")
+async def instagram_auth(code: str):
 
-    redirectUri = "https://localhost:8000/auth/"  # the same as this end point
+    redirectUri = (
+        "https://localhost:8000/authorise-instagram/"  # the same as this end point
+    )
     instagram = Instagram(redirectUri=redirectUri, code=code)
 
     shortToken = instagram.get_token()
@@ -40,7 +43,7 @@ async def auth(code: str):
     ttl = longTokenResponse[TTL]  # time to live / expires in seconds
 
     # Set cookie for long lived token
-    response = RedirectResponse(url=LoginRedirect)
+    response = RedirectResponse(url=InstagramFeed)
     response.set_cookie(
         key=LONG_TOKEN,
         value=longToken,
@@ -57,17 +60,6 @@ async def auth(code: str):
         secure=True,
         httponly=False,
     )
-
-    return response
-
-
-@router.get("/logout")
-def logout():
-
-    response = RedirectResponse(url=LoggedOutRedirect)
-
-    response.delete_cookie(key=LONG_TOKEN)
-    response.delete_cookie(key=TOKEN_TTL)
 
     return response
 
@@ -100,7 +92,7 @@ def home_template(request: Request):
 
 
 # display the users instagram feed, once authenticated
-@router.get("/feed")
+@router.get("/instagram-feed")
 def feed_template(request: Request):
 
     # get the cookie from the request
@@ -111,11 +103,13 @@ def feed_template(request: Request):
     feed = instagram.get_feed()
 
     return templates.TemplateResponse(
-        request=request, name="pages/feed.html", context={"user": user, "feed": feed}
+        request=request,
+        name="pages/instagram-feed.html",
+        context={"user": user, "feed": feed},
     )
 
 
-@router.get("/get-feed")
+@router.get("/get-instagram-feed")
 def feed_htmx(request: Request, nextUrl: str):
 
     # get the cookie from the request
@@ -143,7 +137,7 @@ def feed_htmx(request: Request, nextUrl: str):
         """
 
     if "next" in feed["paging"]:
-        htmlResponse += f"""<div hx-get="/get-feed" hx-vars="{{ 'nextUrl':'{feed["paging"]["next"]}' }}" hx-trigger="revealed" hx-swap="outerHTML">
+        htmlResponse += f"""<div hx-get="/get-instagram-feed" hx-vars="{{ 'nextUrl':'{feed["paging"]["next"]}' }}" hx-trigger="revealed" hx-swap="outerHTML">
             <div class="text-center">
                 <div role="status">
                     <svg aria-hidden="true" class="inline w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -337,5 +331,16 @@ async def sign_user(request: Request):
             secure=True,
             httponly=False,
         )
+
+    return response
+
+
+@router.get("/auth/logout")
+def logout():
+
+    response = RedirectResponse(url=LoggedOutRedirect)
+
+    response.delete_cookie(key=JWT)
+    response.delete_cookie(key=JWT_TTL)
 
     return response

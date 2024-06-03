@@ -52,7 +52,8 @@
 
         {% endfor %}
 
-        <div hx-get="/get-feed" hx-vars="{'nextUrl':'{{feed.paging.next}}'}" hx-trigger="revealed" hx-swap="outerHTML">
+        <div hx-get="/get-instagram-feed" hx-vars="{'nextUrl':'{{feed.paging.next}}'}" hx-trigger="revealed"
+            hx-swap="outerHTML">
             <div class="text-center">
                 <div role="status">
                     <svg aria-hidden="true"

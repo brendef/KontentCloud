@@ -51,8 +51,13 @@ class Auth:
 
         return self.auth.signup(email, password)
 
-    def logout(self):
-        pass
+    def logout(self, token: str):
+        try:
+            response = self.auth.sign_out_with_token(token)
+        except Exception as e:
+            raise Exception(e)
+
+        return response
 
     def reset_password(self, email: str):
         pass

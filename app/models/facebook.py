@@ -36,6 +36,8 @@ class Instagram:
 
         response = requests.post(url, data=payload)
 
+        print(response.json())
+
         shortToken = response.json()["access_token"]
 
         return shortToken

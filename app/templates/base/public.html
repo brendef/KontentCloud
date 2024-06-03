@@ -21,7 +21,7 @@
 <script>
     let jwt_ttl = readCookie("jwt_ttl");
     console.log(jwt_ttl);
-    if (jwt_ttl && window.location.pathname === "/login") {
+    if (jwt_ttl && (window.location.pathname === "/login" || window.location.pathname === "/signup")) {
         window.location.href = "/home";
     }
 </script>
