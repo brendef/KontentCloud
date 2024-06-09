@@ -9,7 +9,7 @@ function readCookie(name) {
             value = pair[1];
         }
     });
-    
+
     return value
 }
 

@@ -38,7 +38,23 @@
 
 <div class="mx-auto max-w-screen-xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
 
-    <h2 class="my-5 text-right text-gray-500">Select images to download</h2>
+
+    <div class="my-5 flex justify-between">
+        <div class="space-y-2">
+            <label for="Option1" class="flex cursor-pointer items-start gap-4">
+                <div class="flex items-center">
+                    &#8203;
+                    <input type="checkbox" class="size-4 rounded border-gray-300" id="select-all-box" />
+                </div>
+
+                <div>
+                    <strong class="font-medium text-gray-900"> Select All </strong>
+                </div>
+            </label>
+        </div>
+
+        <h2 class="text-gray-500">Select images to download</h2>
+    </div>
 
     <div class="content-stretch grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-4">
 
@@ -76,7 +92,13 @@
 
 <script>
 
+    const selectAllBox = document.getElementById('select-all-box')
+
     let selectedImages = []
+
+    document.onload = () => {
+        selectAllBox.checked = false
+    }
 
     document.querySelectorAll('.image').forEach((e) => {
         e.addEventListener('click', (e) => {
@@ -85,14 +107,62 @@
     })
 
     const selectImage = (url, element) => {
-        if (selectedImages.includes(url)) {
-            selectedImages = selectedImages.filter(item => item !== url)
-            element.classList.remove('image-selected-border')
-        } else {
-            selectedImages.push(url)
-            element.classList.add('image-selected-border')
+
+        let imageHasBorder = element.classList.contains('image-selected-border')
+
+        // Check if image has border and add or remove it accordingly
+        switch (imageHasBorder) {
+            case true:
+                selectedImages = selectedImages.filter(item => item !== url)
+                element.classList.remove('image-selected-border')
+                break;
+            case false:
+                selectedImages.push(url)
+                element.classList.add('image-selected-border')
+                break;
         }
+
+        // Check if all images are selected and unchecked the select all box if not
+        document.querySelectorAll('img').forEach((e) => {
+            if (!e.classList.contains('image-selected-border')) {
+                selectAllBox.checked = false
+            }
+        })
+
+        // get the amount of images on the screen
+        imagesOnScreen = document.querySelectorAll('img').length
+
+        // get the amount of selected images
+        if (imagesOnScreen === selectedImages.length) {
+            selectAllBox.checked = true
+        }
+
     }
+
+    async function removeAllImagesFromList() {
+        selectedImages = []
+        document.querySelectorAll('img').forEach((e) => {
+            e.classList.remove('image-selected-border')
+        })
+    }
+
+    function addAllImagesToList() {
+        removeAllImagesFromList().then(() => {
+            document.querySelectorAll('img').forEach((e) => {
+                e.classList.add('image-selected-border')
+                selectedImages.push(e.src)
+            })
+        })
+    }
+
+    document.getElementById('select-all-box').addEventListener('change', (e) => {
+        if (e.target.checked) {
+            addAllImagesToList()
+        }
+        if (!e.target.checked) {
+            removeAllImagesFromList()
+        }
+    })
 
     function download() {
 

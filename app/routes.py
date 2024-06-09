@@ -31,9 +31,7 @@ InstagramFeed = "/instagram-feed"
 @router.get("/authorise-instagram")
 async def instagram_auth(code: str):
 
-    redirectUri = (
-        "https://localhost:8000/authorise-instagram/"  # the same as this end point
-    )
+    redirectUri = "https://localhost:8000/authorise-instagram/"  # must be identical to the redirect url in the instagram api
     instagram = Instagram(redirectUri=redirectUri, code=code)
 
     shortToken = instagram.get_token()
@@ -88,7 +86,17 @@ def login_template(request: Request):
 # where user clicks to login
 @router.get("/home")
 def home_template(request: Request):
-    return templates.TemplateResponse(request=request, name="pages/home.html")
+
+    context = {"instagram_auth": False}
+
+    # get the cookie from the request
+    cookieLongToken = request.cookies.get(LONG_TOKEN)
+    if cookieLongToken is not None:
+        context["instagram_auth"] = True
+
+    return templates.TemplateResponse(
+        request=request, name="pages/home.html", context=context
+    )
 
 
 # display the users instagram feed, once authenticated
