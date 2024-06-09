@@ -107,19 +107,6 @@
         clearSelectionButton.hidden = true
     }
 
-    document.querySelectorAll('.image').forEach((e) => {
-        e.addEventListener('click', (e) => {
-            selectImage(e.srcElement.src, e.target)
-        })
-    })
-
-    document.querySelectorAll('img').forEach((e) => {
-        if (selectAllBox.checked === true && selectedImages.length > 0) {
-            e.classList.add('image-selected-border')
-            selectedImages.push(e.sment.src)
-        }
-    })
-
     document.getElementById('select-all-box').addEventListener('change', (e) => {
         if (e.target.checked) {
             addAllImagesToList()

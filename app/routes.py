@@ -122,6 +122,7 @@ def feed_htmx(request: Request, nextUrl: str):
 
     # get the cookie from the request
     cookieLongToken = request.cookies.get(LONG_TOKEN)
+    selectAllBox = request.query_params.get("selectAllBox", False)
 
     instagram = Instagram(token=cookieLongToken)
     feed = instagram.get_next_feed(nextUrl)
@@ -140,10 +141,15 @@ def feed_htmx(request: Request, nextUrl: str):
                 Your browser does not support the video tag.
             </video> 
             <script>
+
+                if ({selectAllBox}) {{
+                    e.classList.add('image-selected-border')
+                    selectedImages.push(e.srcElement.src)
+                }}
+
                 document.getElementById("a{imageuuid}").addEventListener('click', (e) => {{
                         selectImage(e.srcElement.src, e.target)
-                    }}
-                )
+                    }})
             </script>
         """
         else:
@@ -151,10 +157,14 @@ def feed_htmx(request: Request, nextUrl: str):
         
             <div id="a{imageuuid}" class="image"> <img src="{image["media_url"]}" alt="" /> </div>
             <script>
+                if ({selectAllBox}) {{
+                    e.classList.add('image-selected-border')
+                    selectedImages.push(e.srcElement.src)
+                }}
+
                 document.getElementById("a{imageuuid}").addEventListener('click', (e) => {{
-                        selectImage(e.srcElement.src, e.target)
-                    }}
-                )
+                    selectImage(e.srcElement.src, e.target)
+                }})
             </script>
         """
 
