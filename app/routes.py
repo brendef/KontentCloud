@@ -129,11 +129,25 @@ def feed_htmx(request: Request, nextUrl: str):
     htmlResponse = ""
 
     for image in feed["data"]:
-        if image["media_type"] == "VIDEO":
-            continue
 
         imageuuid = str(uuid.uuid4())
-        htmlResponse += f"""
+
+        if image["media_type"] == "VIDEO":
+            print(image)
+            htmlResponse += f"""
+             <video id="a{imageuuid}" width="300" height="100">
+                <source src="{image["media_url"]}" type="video/mp4">
+                Your browser does not support the video tag.
+            </video> 
+            <script>
+                document.getElementById("a{imageuuid}").addEventListener('click', (e) => {{
+                        selectImage(e.srcElement.src, e.target)
+                    }}
+                )
+            </script>
+        """
+        else:
+            htmlResponse += f"""
         
             <div id="a{imageuuid}" class="image"> <img src="{image["media_url"]}" alt="" /> </div>
             <script>

@@ -53,7 +53,11 @@
             </label>
         </div>
 
-        <h2 class="text-gray-500">Select images to download</h2>
+        <div class="flex space-x-8">
+            <button id="clear-selection-button" hx-on:click="clearSelection()" class="text-blue-500 underline">
+                clear selection </button>
+            <h2 id="image-amount" class="text-gray-500">Select images to download</h2>
+        </div>
     </div>
 
     <div class="content-stretch grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-4">
@@ -93,11 +97,14 @@
 <script>
 
     const selectAllBox = document.getElementById('select-all-box')
+    const imageAmountDisplay = document.getElementById('image-amount')
+    const clearSelectionButton = document.getElementById('clear-selection-button')
 
     let selectedImages = []
 
-    document.onload = () => {
+    window.onload = () => {
         selectAllBox.checked = false
+        clearSelectionButton.hidden = true
     }
 
     document.querySelectorAll('.image').forEach((e) => {
@@ -106,7 +113,31 @@
         })
     })
 
-    const selectImage = (url, element) => {
+    document.getElementById('select-all-box').addEventListener('change', (e) => {
+        if (e.target.checked) {
+            addAllImagesToList()
+        }
+        if (!e.target.checked) {
+            removeAllImagesFromList()
+        }
+    })
+
+    function updateCountImageCountDisplay() {
+        imageAmountDisplay.innerHTML = `Selected ${selectedImages.length} / {{ user.media_count }} images`
+
+        if (selectedImages.length === 0) {
+            clearSelectionButton.hidden = true
+        } else {
+            clearSelectionButton.hidden = false
+        }
+
+        if (selectedImages.length === 0) {
+            imageAmountDisplay.innerHTML = `Select images to download`
+        }
+
+    }
+
+    function selectImage(url, element) {
 
         let imageHasBorder = element.classList.contains('image-selected-border')
 
@@ -137,10 +168,13 @@
             selectAllBox.checked = true
         }
 
+        updateCountImageCountDisplay()
+
     }
 
     async function removeAllImagesFromList() {
         selectedImages = []
+        updateCountImageCountDisplay()
         document.querySelectorAll('img').forEach((e) => {
             e.classList.remove('image-selected-border')
         })
@@ -151,18 +185,10 @@
             document.querySelectorAll('img').forEach((e) => {
                 e.classList.add('image-selected-border')
                 selectedImages.push(e.src)
+                updateCountImageCountDisplay()
             })
         })
     }
-
-    document.getElementById('select-all-box').addEventListener('change', (e) => {
-        if (e.target.checked) {
-            addAllImagesToList()
-        }
-        if (!e.target.checked) {
-            removeAllImagesFromList()
-        }
-    })
 
     function download() {
 
@@ -180,6 +206,11 @@
             window.open("/download-zip", "_blank");
         }
 
+    }
+
+    function clearSelection() {
+        removeAllImagesFromList()
+        updateCountImageCountDisplay()
     }
 
 </script>
