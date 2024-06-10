@@ -122,7 +122,6 @@ def feed_htmx(request: Request, nextUrl: str):
 
     # get the cookie from the request
     cookieLongToken = request.cookies.get(LONG_TOKEN)
-    selectAllBox = request.query_params.get("selectAllBox", False)
 
     instagram = Instagram(token=cookieLongToken)
     feed = instagram.get_next_feed(nextUrl)
@@ -142,10 +141,12 @@ def feed_htmx(request: Request, nextUrl: str):
             </video> 
             <script>
 
-                if ({selectAllBox}) {{
-                    e.classList.add('image-selected-border')
-                    selectedImages.push(e.srcElement.src)
-                }}
+                /*
+                    if (true) {{
+                        e.classList.add('image-selected-border')
+                        selectedImages.push(e.srcElement.src)
+                    }}
+                */
 
                 document.getElementById("a{imageuuid}").addEventListener('click', (e) => {{
                         selectImage(e.srcElement.src, e.target)
@@ -157,10 +158,13 @@ def feed_htmx(request: Request, nextUrl: str):
         
             <div id="a{imageuuid}" class="image"> <img src="{image["media_url"]}" alt="" /> </div>
             <script>
-                if ({selectAllBox}) {{
-                    e.classList.add('image-selected-border')
-                    selectedImages.push(e.srcElement.src)
-                }}
+
+                /*
+                    if (true) {{
+                        e.classList.add('image-selected-border')
+                        selectedImages.push(e.srcElement.src)
+                    }}
+                */
 
                 document.getElementById("a{imageuuid}").addEventListener('click', (e) => {{
                     selectImage(e.srcElement.src, e.target)

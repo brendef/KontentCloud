@@ -107,6 +107,19 @@
         clearSelectionButton.hidden = true
     }
 
+    document.querySelectorAll('.image').forEach((e) => {
+        e.addEventListener('click', (e) => {
+            selectImage(e.srcElement.src, e.target)
+        })
+    })
+
+    document.querySelectorAll('img').forEach((e) => {
+        if (selectAllBox.checked === true && selectedImages.length > 0) {
+            e.classList.add('image-selected-border')
+            selectedImages.push(e.sment.src)
+        }
+    })
+
     document.getElementById('select-all-box').addEventListener('change', (e) => {
         if (e.target.checked) {
             addAllImagesToList()
@@ -121,17 +134,15 @@
 
         if (selectedImages.length === 0) {
             clearSelectionButton.hidden = true
+            imageAmountDisplay.innerHTML = `Select images to download`
         } else {
             clearSelectionButton.hidden = false
         }
-
-        if (selectedImages.length === 0) {
-            imageAmountDisplay.innerHTML = `Select images to download`
-        }
-
     }
 
     function selectImage(url, element) {
+
+        console.log(url)
 
         let imageHasBorder = element.classList.contains('image-selected-border')
 

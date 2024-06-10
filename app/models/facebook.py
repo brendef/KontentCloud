@@ -70,8 +70,12 @@ class Instagram:
             "access_token": self.token,
         }
 
-        response = requests.get(url, params=params)
-        user = response.json()
+        try:
+            response = requests.get(url, params=params)
+            user = response.json()
+        except Exception as e:
+            print(e)
+            return None
 
         return user
 
