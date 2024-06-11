@@ -38,7 +38,6 @@
 
 <div class="mx-auto max-w-screen-xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
 
-
     <div class="my-5 flex justify-between">
         <div class="space-y-2">
             <label for="Option1" class="flex cursor-pointer items-start gap-4">
@@ -54,27 +53,27 @@
         </div>
 
         <div class="flex space-x-8">
-            <button id="clear-selection-button" hx-on:click="clearSelection()" class="text-blue-500 underline">
+            <button id="clear-selection-button" hidden hx-on:click="clearSelection()" class="text-blue-500 underline">
                 clear selection
             </button>
             <h2 id="image-amount" class="text-gray-500">Select images to download</h2>
         </div>
     </div>
 
-    <div class="content-stretch grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-4">
+    <div id="feed-grid" class="content-stretch grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-4">
 
         {% for image in feed.data %}
 
 
 
         {% if image.media_type == "IMAGE" %}
-        <div id="{{ image.id }}" class="image">
+        <div id="{{ image.id }}" class="image border border-gray-200">
             <img class="thumbnail" src="{{ image.media_url }}" alt="" />
         </div>
         {% endif %}
 
         {% if image.media_type == "VIDEO" %}
-        <div id="{{ image.id }}" class="image">
+        <div id="{{ image.id }}" class="image border border-gray-200">
             <video class="thumbnail aspect-square video" width="300" height="100">
                 <source src="{{ image.media_url }}" type="video/mp4">
                 Your browser does not support the video tag.
@@ -84,8 +83,8 @@
 
         {% endfor %}
 
-        <div hx-get="/get-instagram-feed" hx-vars="{'nextUrl':'{{feed.paging.next}}'}" hx-trigger="revealed"
-            hx-swap="outerHTML">
+        <div id="loading-spinner" hx-get="/get-instagram-feed" hx-vars="{'nextUrl':'{{feed.paging.next}}'}"
+            hx-trigger="revealed" hx-swap="outerHTML">
             <div class="text-center">
                 <div role="status">
                     <svg aria-hidden="true"
@@ -135,20 +134,14 @@
         })
     })
 
-    thumbnail.forEach((e) => {
-        if (selectAllBox.checked === true && selectedImages.length > 0) {
-            e.classList.add('image-selected-border')
-            // selectedImages.push(src)
-        }
-    })
-
-    document.getElementById('select-all-box').addEventListener('change', (e) => {
+    document.getElementById('select-all-box').addEventListener('change', async (e) => {
         if (e.target.checked) {
-            addAllImagesToList()
+            await addAllImagesToList()
         }
         if (!e.target.checked) {
-            removeAllImagesFromList()
+            await removeAllImagesFromList()
         }
+        console.log(selectedImages)
     })
 
     function updateCountImageCountDisplay() {
@@ -179,14 +172,14 @@
         }
 
         // Check if all images are selected and unchecked the select all box if not
-        thumbnail.forEach((e) => {
+        document.querySelectorAll('img, video').forEach((e) => {
             if (!e.classList.contains('image-selected-border')) {
                 selectAllBox.checked = false
             }
         })
 
         // get the amount of images on the screen
-        imagesOnScreen = thumbnail.length
+        imagesOnScreen = document.querySelectorAll('img, video').length
 
         // get the amount of selected images
         if (imagesOnScreen === selectedImages.length) {
@@ -213,18 +206,24 @@
     async function removeAllImagesFromList() {
         selectedImages = []
         updateCountImageCountDisplay()
-        thumbnail.forEach((e) => {
+        document.querySelectorAll('img, video').forEach((e) => {
             e.classList.remove('image-selected-border')
         })
     }
 
-    function addAllImagesToList() {
-        removeAllImagesFromList().then(() => {
-            thumbnail.forEach((e) => {
-                e.classList.add('image-selected-border')
-                selectedImages.push(e.src)
-                updateCountImageCountDisplay()
-            })
+    async function addAllImagesToList() {
+        await removeAllImagesFromList()
+        document.querySelectorAll('img, video').forEach((e) => {
+
+            let src = e.src
+
+            if (e.tagName === 'VIDEO') {
+                src = e.currentSrc
+            }
+
+            e.classList.add('image-selected-border')
+            selectedImages.push(src)
+            updateCountImageCountDisplay()
         })
     }
 

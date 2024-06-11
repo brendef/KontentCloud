@@ -130,53 +130,44 @@ def feed_htmx(request: Request, nextUrl: str):
 
     for image in feed["data"]:
 
-        # imageuuid = str(uuid.uuid4())
-
         if image["media_type"] == "CAROUSEL_ALBUM":
             pass
 
         if image["media_type"] == "VIDEO":
 
             htmlResponse += f"""
-             <video id="{image["id"]}" class="thumbnail aspect-square" width="500" height="100">
-                <source src="{image["media_url"]}" type="video/mp4">
-                Your browser does not support the video tag.
-            </video> 
+            <div id="{{ image.id }}" class="image border border-gray-200">
+                <video id="{image["id"]}" class="thumbnail aspect-square" width="500" height="100">
+                    <source src="{image["media_url"]}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video> 
+            </div>
+
             <script>
-
-                /*
-                    if (true) {{
-                        e.classList.add('image-selected-border')
-                        selectedImages.push(e.srcElement.src)
-                    }}
-                */
-
-                document.getElementById("{image["id"]}").addEventListener('click', (e) => {{
-                        selectImage(e.srcElement.src, e.target, {image["id"]})
-                    }})
+                document.getElementById('select-all-box').checked = false;
             </script>
         """
         else:
             htmlResponse += f"""
-        
-            <div id="{image["id"]}" class="image"> <img class="thumbnail" src="{image["media_url"]}" alt="" /> </div>
+            <div id="{image["id"]}" class="image border border-gray-200"> <img class="thumbnail" src="{image["media_url"]}" alt="" /> </div>
+        """
+
+        htmlResponse += f"""
             <script>
 
-                /*
-                    if (true) {{
-                        e.classList.add('image-selected-border')
-                        selectedImages.push(e.srcElement.src)
-                    }}
-                */
-
                 document.getElementById("{image["id"]}").addEventListener('click', (e) => {{
-                    selectImage(e.srcElement.src, e.target, {image["id"]})
+                    selectImage(e.srcElement.src, e.target, "{image["id"]}")
                 }})
+
+            </script>
+
+            <script>
+                document.getElementById('select-all-box').checked = false;
             </script>
         """
 
     if "next" in feed["paging"]:
-        htmlResponse += f"""<div hx-get="/get-instagram-feed" hx-vars="{{ 'nextUrl':'{feed["paging"]["next"]}' }}" hx-trigger="revealed" hx-swap="outerHTML">
+        htmlResponse += f"""<div id="loading-spinner" hx-get="/get-instagram-feed" hx-vars="{{ 'nextUrl':'{feed["paging"]["next"]}' }}" hx-trigger="revealed" hx-swap="outerHTML">
             <div class="text-center">
                 <div role="status">
                     <svg aria-hidden="true" class="inline w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
