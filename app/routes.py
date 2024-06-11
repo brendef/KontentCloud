@@ -1,4 +1,4 @@
-import uuid, json, requests, os
+import urllib, json, requests, os
 
 from datetime import datetime, timedelta, timezone
 
@@ -130,12 +130,15 @@ def feed_htmx(request: Request, nextUrl: str):
 
     for image in feed["data"]:
 
-        imageuuid = str(uuid.uuid4())
+        # imageuuid = str(uuid.uuid4())
+
+        if image["media_type"] == "CAROUSEL_ALBUM":
+            pass
 
         if image["media_type"] == "VIDEO":
-            print(image)
+
             htmlResponse += f"""
-             <video id="a{imageuuid}" width="300" height="100">
+             <video id="{image["id"]}" class="thumbnail aspect-square" width="500" height="100">
                 <source src="{image["media_url"]}" type="video/mp4">
                 Your browser does not support the video tag.
             </video> 
@@ -148,15 +151,15 @@ def feed_htmx(request: Request, nextUrl: str):
                     }}
                 */
 
-                document.getElementById("a{imageuuid}").addEventListener('click', (e) => {{
-                        selectImage(e.srcElement.src, e.target)
+                document.getElementById("{image["id"]}").addEventListener('click', (e) => {{
+                        selectImage(e.srcElement.src, e.target, {image["id"]})
                     }})
             </script>
         """
         else:
             htmlResponse += f"""
         
-            <div id="a{imageuuid}" class="image"> <img src="{image["media_url"]}" alt="" /> </div>
+            <div id="{image["id"]}" class="image"> <img class="thumbnail" src="{image["media_url"]}" alt="" /> </div>
             <script>
 
                 /*
@@ -166,8 +169,8 @@ def feed_htmx(request: Request, nextUrl: str):
                     }}
                 */
 
-                document.getElementById("a{imageuuid}").addEventListener('click', (e) => {{
-                    selectImage(e.srcElement.src, e.target)
+                document.getElementById("{image["id"]}").addEventListener('click', (e) => {{
+                    selectImage(e.srcElement.src, e.target, {image["id"]})
                 }})
             </script>
         """
@@ -187,6 +190,23 @@ def feed_htmx(request: Request, nextUrl: str):
     """
 
     return HTMLResponse(content=htmlResponse)
+
+
+@router.get("/get-instagram-media/{media_id}")
+def media_template(request: Request, media_id: str):
+
+    # get the cookie from the request
+    cookieLongToken = request.cookies.get(LONG_TOKEN)
+
+    instagram = Instagram(token=cookieLongToken)
+
+    try:
+        media = instagram.get_media(media_id)
+    except Exception as e:
+        print(e)
+        return HTMLResponse(content="An error occured")
+
+    return media
 
 
 # Websocket route
@@ -235,25 +255,24 @@ async def download_images(websocket: WebSocket):
 
         for num, link in enumerate(links):
 
-            try:
-                # download the image
-                response = requests.get(link)
-                response.raise_for_status()
+            filename: str = None
 
-                # get the first part of the link which will be used as the name of the file
-                extractedName = link.split("?")[0]
-                filename = os.path.join(
-                    tempImageFolder, os.path.basename(extractedName)
-                )
+            # download the image
+            response = requests.get(url=link, stream=True)
 
-                with open(filename, "wb") as file:
-                    file.write(response.content)
+            # get the first part of the link which will be used as the name of the file
+            extractedName = link.split("?")[0]
+            filename = os.path.join(tempImageFolder, os.path.basename(extractedName))
 
-            except requests.exceptions.RequestException as e:
-                print(f"Error downloading {link}: {e}")
+            # there is no file extension in video links
+            if not ".jpg" in filename:
+                filename += ".mp4"
+
+            with open(filename, "wb") as file:
+                file.write(response.content)
 
             # respond with the progress
-            await websocket.send_text(str(num))  # TODO: improve this
+            await websocket.send_text(f"downloading: {str(num)}")  # TODO: improve this
 
         # zip the folder containing all the downloaded images
         responseZipFile = f"{tempImageFolder}.zip"

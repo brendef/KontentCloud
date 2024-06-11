@@ -11,6 +11,7 @@ class Instagram:
     GRAPH_INSTAGRAM_URL = "https://graph.instagram.com/access_token"
     GRAPH_MEDIA_URL = "https://graph.instagram.com/me/media"
     GRAPH_USER_URL = "https://graph.instagram.com/me"
+    GRAPH_BASE_URL = "https://graph.instagram.com"
 
     def __init__(self, **kwargs):
 
@@ -98,3 +99,16 @@ class Instagram:
         feed = response.json()
 
         return feed
+
+    def get_media(self, media_id: str):
+
+        url = f"{self.GRAPH_BASE_URL}/{media_id}"
+        params = {
+            "fields": "id,media_type,media_url,caption,timestamp,thumbnail_url",
+            "access_token": self.token,
+        }
+
+        response = requests.get(url, params=params)
+        media = response.json()
+
+        return media

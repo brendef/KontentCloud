@@ -55,7 +55,8 @@
 
         <div class="flex space-x-8">
             <button id="clear-selection-button" hx-on:click="clearSelection()" class="text-blue-500 underline">
-                clear selection </button>
+                clear selection
+            </button>
             <h2 id="image-amount" class="text-gray-500">Select images to download</h2>
         </div>
     </div>
@@ -64,9 +65,20 @@
 
         {% for image in feed.data %}
 
-        {% if image.media_type != "VIDEO" %}
-        <div id="{{ loop.index }}" class="image">
-            <img src="{{ image.media_url }}" alt="" />
+
+
+        {% if image.media_type == "IMAGE" %}
+        <div id="{{ image.id }}" class="image">
+            <img class="thumbnail" src="{{ image.media_url }}" alt="" />
+        </div>
+        {% endif %}
+
+        {% if image.media_type == "VIDEO" %}
+        <div id="{{ image.id }}" class="image">
+            <video class="thumbnail aspect-square video" width="300" height="100">
+                <source src="{{ image.media_url }}" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
         </div>
         {% endif %}
 
@@ -99,6 +111,7 @@
     const selectAllBox = document.getElementById('select-all-box')
     const imageAmountDisplay = document.getElementById('image-amount')
     const clearSelectionButton = document.getElementById('clear-selection-button')
+    const thumbnail = document.querySelectorAll('img, video')
 
     let selectedImages = []
 
@@ -107,16 +120,25 @@
         clearSelectionButton.hidden = true
     }
 
-    document.querySelectorAll('.image').forEach((e) => {
+    document.querySelectorAll('.image', '.video').forEach((e) => {
+        let id = e.id
+        let src = ""
+
         e.addEventListener('click', (e) => {
-            selectImage(e.srcElement.src, e.target)
+            src = e.srcElement.src
+
+            if (e.srcElement.tagName === 'VIDEO') {
+                src = e.srcElement.currentSrc
+            }
+
+            selectImage(src, e.target, id)
         })
     })
 
-    document.querySelectorAll('img').forEach((e) => {
+    thumbnail.forEach((e) => {
         if (selectAllBox.checked === true && selectedImages.length > 0) {
             e.classList.add('image-selected-border')
-            selectedImages.push(e.sment.src)
+            // selectedImages.push(src)
         }
     })
 
@@ -140,9 +162,7 @@
         }
     }
 
-    function selectImage(url, element) {
-
-        console.log(url)
+    function selectImage(url, element, id) {
 
         let imageHasBorder = element.classList.contains('image-selected-border')
 
@@ -159,14 +179,14 @@
         }
 
         // Check if all images are selected and unchecked the select all box if not
-        document.querySelectorAll('img').forEach((e) => {
+        thumbnail.forEach((e) => {
             if (!e.classList.contains('image-selected-border')) {
                 selectAllBox.checked = false
             }
         })
 
         // get the amount of images on the screen
-        imagesOnScreen = document.querySelectorAll('img').length
+        imagesOnScreen = thumbnail.length
 
         // get the amount of selected images
         if (imagesOnScreen === selectedImages.length) {
@@ -175,19 +195,32 @@
 
         updateCountImageCountDisplay()
 
+
+        /*
+            // get media 
+            fetch(`/get-instagram-media/${id}`).then((response) => {
+                return response.json()
+            }).then((data) => {
+                console.log(data)
+            })
+        */
+
+        console.log(selectedImages)
+
+
     }
 
     async function removeAllImagesFromList() {
         selectedImages = []
         updateCountImageCountDisplay()
-        document.querySelectorAll('img').forEach((e) => {
+        thumbnail.forEach((e) => {
             e.classList.remove('image-selected-border')
         })
     }
 
     function addAllImagesToList() {
         removeAllImagesFromList().then(() => {
-            document.querySelectorAll('img').forEach((e) => {
+            thumbnail.forEach((e) => {
                 e.classList.add('image-selected-border')
                 selectedImages.push(e.src)
                 updateCountImageCountDisplay()
