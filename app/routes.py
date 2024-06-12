@@ -197,18 +197,28 @@ def carousel_album_htmx(request: Request, media_id: str):
         print(e)
         return HTMLResponse(content="An error occured")
 
-    # htmlResponse = ""
-    for child in media["children"]["data"]:
+    htmlResponse = ""
+    for pos, child in enumerate(media["children"]["data"]):
         id = child["id"]
         childImage = instagram.get_child_media(id)
 
-        print(childImage)
+        addBorder = ""
+        if pos == 0:
+            addBorder = "image-selected-border"
 
-    #     # htmlResponse += f"""
-    #     #     <div id="{id}" class="image border border-gray-200"> <img class="thumbnail" src="{childImage["media_url"]}" alt="" /> </div>
-    #     # """
+        htmlResponse += f"""
+            <div id="{childImage["id"]}" class="image border border-gray-200">
+                <img class="thumbnail {addBorder}" src="{childImage["media_url"]}" alt="" />
+            </div>
 
-    # return HTMLResponse(content=htmlResponse)
+            <script>
+                document.getElementById("{childImage["id"]}").addEventListener('click', (e) => {{
+                    selectImage(e.srcElement.src, e.target, "{childImage["id"]}")
+                }})
+            </script>
+        """
+
+    return HTMLResponse(content=htmlResponse)
 
 
 # Websocket route
