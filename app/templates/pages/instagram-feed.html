@@ -18,7 +18,7 @@
                 <button
                     class="inline-flex items-center justify-center gap-1.5 rounded-lg border border-gray-200 px-5 py-3 text-gray-500 transition hover:bg-gray-50 hover:text-gray-700 focus:outline-none focus:ring"
                     type="button">
-                    <span class="text-sm font-medium"> View Page</span>
+                    <span class="text-sm font-medium"> Save to Cloud </span>
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -64,6 +64,16 @@
 
         {% for image in feed.data %}
 
+        {% if image.media_type == "CAROUSEL_ALBUM" %}
+
+        <div id="{{ image.id }}" hx-get="/get-carousel-album/{{image.id}}" class="image border border-gray-200"
+            hx-target="#album-display">
+            <div class="carousel">
+                <img class="thumbnail" src="{{ image.media_url }}" alt="" />
+            </div>
+        </div>
+        <div id="album-display"></div>
+        {% endif %}
 
 
         {% if image.media_type == "IMAGE" %}
@@ -188,15 +198,14 @@
 
         updateCountImageCountDisplay()
 
-
         /*
-            // get media 
-            fetch(`/get-instagram-media/${id}`).then((response) => {
-                return response.json()
-            }).then((data) => {
-                console.log(data)
-            })
-        */
+        // get media 
+        fetch(`/get-instagram-media/${id}`).then((response) => {
+            return response.json()
+        }).then((data) => {
+            console.log(data)
+        })
+            */
 
         console.log(selectedImages)
 

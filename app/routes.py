@@ -183,8 +183,8 @@ def feed_htmx(request: Request, nextUrl: str):
     return HTMLResponse(content=htmlResponse)
 
 
-@router.get("/get-instagram-media/{media_id}")
-def media_template(request: Request, media_id: str):
+@router.get("/get-carousel-album/{media_id}")
+def carousel_album_htmx(request: Request, media_id: str):
 
     # get the cookie from the request
     cookieLongToken = request.cookies.get(LONG_TOKEN)
@@ -197,7 +197,18 @@ def media_template(request: Request, media_id: str):
         print(e)
         return HTMLResponse(content="An error occured")
 
-    return media
+    # htmlResponse = ""
+    for child in media["children"]["data"]:
+        id = child["id"]
+        childImage = instagram.get_child_media(id)
+
+        print(childImage)
+
+    #     # htmlResponse += f"""
+    #     #     <div id="{id}" class="image border border-gray-200"> <img class="thumbnail" src="{childImage["media_url"]}" alt="" /> </div>
+    #     # """
+
+    # return HTMLResponse(content=htmlResponse)
 
 
 # Websocket route

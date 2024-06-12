@@ -104,7 +104,20 @@ class Instagram:
 
         url = f"{self.GRAPH_BASE_URL}/{media_id}"
         params = {
-            "fields": "id,media_type,media_url,caption,timestamp,thumbnail_url",
+            "fields": "id,media_type,media_url,caption,timestamp,thumbnail_url,children",
+            "access_token": self.token,
+        }
+
+        response = requests.get(url, params=params)
+        media = response.json()
+
+        return media
+
+    def get_child_media(self, media_id: str):
+
+        url = f"{self.GRAPH_BASE_URL}/{media_id}"
+        params = {
+            "fields": "id,media_type,media_url,timestamp,thumbnail_url",
             "access_token": self.token,
         }
 
