@@ -40,4 +40,19 @@
 
 {% endif %}
 
+{% if env == "DEV" %}
+
+<div class="flex flex-col items-center justify-center">
+    <div class="flex flex-col items-center justify-center m-10">
+        <div class="flex flex-col items-center justify-center">
+            <a class="block bg-red-500 px-5 py-3 text-sm font-medium text-white transition hover:bg-red-600 focus:outline-none focus:ring"
+                href="/instagram-feed">
+                DEV INSTAGRAM AUTH
+            </a>
+        </div>
+    </div>
+</div>
+
+{% endif %}
+
 {% endblock %}

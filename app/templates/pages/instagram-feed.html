@@ -67,8 +67,8 @@
         {% if image.media_type == "CAROUSEL_ALBUM" %}
         <div id="{{ image.id }}" hx-get="/get-carousel-album/{{image.id}}" class="image border border-gray-200"
             hx-swap="outerHTML">
-            <img class="thumbnail carousel" hx-on:click='showImageLoading("{{ image.id }}")'
-                src=" {{ image.media_url }}" alt="" />
+            <p class="carousel-album-text absolute bg-black text-white px-2">album</p>
+            <img class="thumbnail carousel" src=" {{ image.media_url }}" alt="" />
         </div>
         <div id="carousel-loader-{{ image.id }}" class="loader-class" hidden>
             <div role="status">
@@ -141,10 +141,6 @@
         clearSelectionButton.hidden = true
     }
 
-    document.body.addEventListener('htmx:afterRequest', function () {
-        document.getElementsByClassName('loader-class').hidden = true
-    })
-
     document.querySelectorAll('.image', '.video').forEach((e) => {
         let id = e.id
         let src = ""
@@ -162,6 +158,29 @@
 
             selectImage(src, e.target, id)
         })
+
+        e.addEventListener('htmx:beforeRequest', function (evt) {
+            let id = evt.srcElement.id
+
+            const loadingIndicator = document.querySelector(`#carousel-loader-${id}`);
+            let src = document.getElementById(evt.srcElement.id).querySelector(".thumbnail").src
+            // remove src from selectedImages array
+            selectedImages = selectedImages.filter(item => item != src)
+
+            if (loadingIndicator) {
+                loadingIndicator.style.display = 'block';
+            }
+
+        });
+
+        e.addEventListener('htmx:afterRequest', function (evt) {
+            let id = evt.srcElement.id
+            const loadingIndicator = document.querySelector(`#carousel-loader-${id}`);
+            if (loadingIndicator) {
+                loadingIndicator.style.display = 'none';
+            }
+
+        });
     })
 
     document.getElementById('select-all-box').addEventListener('change', async (e) => {
@@ -287,11 +306,12 @@
         selectedImages = selectedImages.filter(item => item !== url)
     }
 
+    /*
     function showImageLoading(id) {
         document.getElementById(id).hidden = true
         document.getElementById(`carousel-loader-${id}`).hidden = false
     }
-
+        */
 
 </script>
 
