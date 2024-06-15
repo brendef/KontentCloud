@@ -66,14 +66,14 @@
 
         {% if image.media_type == "CAROUSEL_ALBUM" %}
         <div id="{{ image.id }}" hx-get="/get-carousel-album/{{image.id}}" class="image border border-gray-200"
-            hx-swap="outerHTML">
+            hx-swap="outerHTML" hx-indicator="#carousel-loader-{{ image.id }}">
             <p class="carousel-album-text absolute bg-black text-white px-2">album</p>
             <img class="thumbnail carousel" src=" {{ image.media_url }}" alt="" />
         </div>
-        <div id="carousel-loader-{{ image.id }}" class="loader-class" hidden>
+        <div id="carousel-loader-{{ image.id }}" class="loader-class htmx-indicator" hidden>
             <div role="status">
-                <svg class="inline w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
-                    viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg class="inline w-8 h-8 text-gray-200 animate-spin fill-blue-600" viewBox="0 0 100 101" fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
                     <path
                         d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
                         fill="currentColor" />
@@ -109,8 +109,7 @@
             hx-trigger="revealed" hx-swap="outerHTML">
             <div class="text-center">
                 <div role="status">
-                    <svg aria-hidden="true"
-                        class="inline w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
+                    <svg aria-hidden="true" class="inline w-8 h-8 text-gray-200 animate-spin fill-blue-600"
                         viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path
                             d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
@@ -163,7 +162,7 @@
             let id = evt.srcElement.id
 
             const loadingIndicator = document.querySelector(`#carousel-loader-${id}`);
-            let src = document.getElementById(evt.srcElement.id).querySelector(".thumbnail").src
+            let src = document.getElementById(id).querySelector(".thumbnail").src
             // remove src from selectedImages array
             selectedImages = selectedImages.filter(item => item != src)
 
@@ -174,7 +173,10 @@
         });
 
         e.addEventListener('htmx:afterRequest', function (evt) {
+
             let id = evt.srcElement.id
+            let src = evt.srcElement.querySelector(".thumbnail").src
+            selectedImages = selectedImages.filter(item => item != src)
             const loadingIndicator = document.querySelector(`#carousel-loader-${id}`);
             if (loadingIndicator) {
                 loadingIndicator.style.display = 'none';
