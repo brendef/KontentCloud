@@ -87,27 +87,6 @@ def login_template(request: Request):
 @router.get("/home")
 def home_template(request: Request):
 
-    ENV = os.getenv("ENV")
-
-    if ENV == "DEV":
-        context = {"instagram_auth": True}
-        context["env"] = ENV
-
-        devLongToken = Instagram.INSTAGRAM_DEV_TOKEN
-
-        response = templates.TemplateResponse(
-            request=request, name="pages/home.html", context=context
-        )
-        response.set_cookie(
-            key=LONG_TOKEN,
-            value=devLongToken,
-            expires=datetime.now(timezone.utc) + timedelta(seconds=86400 * 399),
-            secure=True,
-            httponly=True,
-        )
-
-        return response
-
     context = {"instagram_auth": False}
 
     # get the cookie from the request
@@ -350,7 +329,7 @@ async def download_images(websocket: WebSocket):
                 file.write(response.content)
 
             # respond with the progress
-            await websocket.send_text(f"downloading: {str(num)}")  # TODO: improve this
+            await websocket.send_text(json.dumps({"total": len(links), "count": num}))
 
         # zip the folder containing all the downloaded images
         responseZipFile = f"{tempImageFolder}.zip"
