@@ -1,88 +1,119 @@
-{% extends 'base/public.html' %}
+<!DOCTYPE html>
+<html>
 
-{% block title %} Home {% endblock %}
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Kontent Keep | Home</title>
+    <link rel="stylesheet" href="../../static/bootstrap-studio/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700">
+    <link rel="stylesheet" href="../../static/bootstrap-studio/fonts/fontawesome-all.min.css">
+    <link rel="stylesheet" href="../../static/bootstrap-studio/css/Features-Boxed.css">
+    <link rel="stylesheet" href="../../static/bootstrap-studio/css/Footer-Basic.css">
+    <link rel="stylesheet" href="../../static/bootstrap-studio/css/Header-Blue.css">
+    <link rel="stylesheet" href="../../static/bootstrap-studio/css/Highlight-Blue.css">
+    <link rel="stylesheet" href="../../static/bootstrap-studio/css/Highlight-Clean.css">
+    <link rel="stylesheet" href="../../static/bootstrap-studio/css/Navigation-Clean.css">
+    <link rel="stylesheet" href="../../static/bootstrap-studio/css/Newsletter-Subscription-Form.css">
+    <link rel="stylesheet" href="../../static/bootstrap-studio/css/styles.css">
+</head>
 
-{% block content %}
 
-{% include 'components/navbar.html' %}
-
-<section class="text-gray-600 body-font bg-indigo-100">
-    <div class="container mx-auto flex px-5 py-24 md:flex-row flex-col items-center">
-        <div class="lg:max-w-lg lg:w-full md:w-1/2 w-5/6 mb-10 md:mb-0">
-            <img alt="hero" src="../../static/images/download-man.png">
+<nav class="navbar navbar-light navbar-expand-md navigation-clean">
+    <div class="container"><a class="navbar-brand" href="#"
+            style="background: #00e33f;padding: 5px 0px;padding-right: 4px;margin-right: 16px;color: rgb(0,0,0);padding-bottom: 0px;padding-top: 14px;padding-left: 34px;">KontentKeep</a><button
+            data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle
+                navigation</span><span class="navbar-toggler-icon"></span></button>
+        <div class="collapse navbar-collapse" id="navcol-1">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item"><a class="nav-link" href="#">How</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Cloud</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Login</a></li>
+            </ul><button class="btn btn-primary" type="button" style="background: rgb(0,0,0);">Get Started</button>
         </div>
-        <div
-            class="lg:flex-grow md:w-1/2 lg:pl-24 md:pl-16 flex flex-col md:items-start md:text-left items-center text-center">
-            <h1 class="title-font sm:text-4xl text-3xl mb-4 font-medium text-gray-900">
-                Own your social media content
-            </h1>
-            <p class="mb-8 leading-relaxed">
-                Kontent Keep is a social media content management platform that allows you to download your social media
-                content or store it safely in the cloud.
-            </p>
-            <div class="flex justify-center">
-                <button
-                    class="inline-flex text-white bg-black border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded text-lg">
-                    Download Content
-                </button>
-                <button
-                    class="ml-4 inline-flex text-gray-700 bg-gray-100 border-0 py-2 px-6 focus:outline-none hover:bg-gray-200 rounded text-lg">
-                    Cloud Storage
-                </button>
+    </div>
+</nav>
+<div class="d-xl-flex align-items-xl-center highlight-clean"
+    style="height: 500px;border-color: rgb(0,0,0);border-top-color: rgb(0,0,0);">
+    <div class="container">
+        <div class="intro">
+            <h2 class="text-center">Own your social media content<br></h2>
+            <p class="text-center">KontentKeep is a social media content management platform that allows you to
+                download your social media content or store it safely in the cloud.<br></p>
+        </div>
+        <div class="buttons"><a class="btn btn-primary" role="button" href="#" style="background: rgb(0,0,0);">Download
+                your feed</a><button class="btn btn-light" type="button">get Cloud storage</button></div>
+    </div>
+</div>
+<div class="features-boxed" style="background: rgb(255,255,255);">
+    <div class="container">
+        <div class="intro"></div>
+        <div class="row justify-content-center features" style="border-top-style: solid;border-top-color: rgb(0,0,0);">
+            <div class="col-sm-6 col-md-5 col-lg-4 item">
+                <div class="box">
+                    <h1 style="margin: 20px 0 35px;">1.</h1>
+                    <h3 class="name">Login</h3>
+                    <p class="text-center description">Login and authorise the social media platforms you'd like to
+                        back up.</p>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-5 col-lg-4 item">
+                <div class="box">
+                    <h1 style="margin: 20px 0 35px;">2.</h1>
+                    <h3 class="name">Select Content</h3>
+                    <p class="text-center description">Select the posts that you'd like to backup or download</p>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-5 col-lg-4 item">
+                <div class="box">
+                    <h1 style="margin: 20px 0 35px;">3.</h1>
+                    <h3 class="name">Download or Store</h3>
+                    <p class="text-center description">Download them securely to your device or send them to cloud
+                        storage</p>
+                </div>
             </div>
         </div>
     </div>
-</section>
-
-<section class="text-gray-600 body-font">
-    <div class="container px-5 py-24 mx-auto">
-        <div class="flex flex-col text-center w-full mb-20">
-            <h2 class="text-xs text-indigo-500 tracking-widest font-medium title-font mb-1">Kontent Keep</h2>
-            <h1 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900 capitalize">
-                Social Media Content Management
-            </h1>
-            <p class="lg:w-2/3 mx-auto leading-relaxed text-base">
-                Kontent Keep offers seamless content management and secure cloud storage for all your social media
-                content. Easily export, organize, and safeguard your digital memories with our user-friendly platform.
-            </p>
+</div>
+<section class="highlight-blue" style="background: rgb(0,0,0);padding: 70px 0px;">
+    <div class="container">
+        <div class="intro">
+            <h2 class="text-center">Cloud Storage</h2>
+            <p class="text-center">KontentKeep allows you to back your content up to the major cloud storage
+                providers. We are still improving our system, so sign up to stay in the loop as our app develops, or
+                join the waiting list below.</p>
         </div>
-        <div class="flex flex-wrap">
-            <div class="xl:w-1/4 lg:w-1/2 md:w-full px-8 py-6 border-l-2 border-gray-200 border-opacity-60">
-                <h2 class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">Download to your device</h2>
-                <p class="leading-relaxed text-base mb-4">
-                    Easily download your social media content directly to your device. Have your photos, videos, and
-                    posts at your fingertips whenever you need them.
-                </p>
-            </div>
-            <div class="xl:w-1/4 lg:w-1/2 md:w-full px-8 py-6 border-l-2 border-gray-200 border-opacity-60">
-                <h2 class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">Easy to use</h2>
-                <p class="leading-relaxed text-base mb-4">
-                    With a user-friendly interface, managing your social media
-                    content has never been easier. Our intuitive platform allows you to organize, access, and retrieve
-                    your content anytime, anywhere.
-
-                </p>
-            </div>
-            <div class="xl:w-1/4 lg:w-1/2 md:w-full px-8 py-6 border-l-2 border-gray-200 border-opacity-60">
-                <h2 class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">Secure cloud storage</h2>
-                <p class="leading-relaxed text-base mb-4">
-                    Store your content securely in our cloud with end-to-end
-                    encryption. Never worry about losing your precious memories or important posts again.
-                </p>
-            </div>
-            <div class="xl:w-1/4 lg:w-1/2 md:w-full px-8 py-6 border-l-2 border-gray-200 border-opacity-60">
-                <h2 class="text-lg sm:text-xl text-gray-900 font-medium title-font mb-2">Privacy First</h2>
-                <p class="leading-relaxed text-base mb-4">
-                    Your privacy is our priority. We never share your data with third parties and ensure it is always
-                    protected.
-                </p>
-            </div>
-        </div>
-        <button
-            class="flex my-24 mx-auto text-white bg-black border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded text-lg">
-            Get Started
-        </button>
+        <div class="buttons"><a class="btn btn-primary" role="button" href="#" style="border-color: #00e33f;">Sign
+                up</a></div>
     </div>
 </section>
+<section class="newsletter-subscribe" style="padding: 80px 0px;border-top-color: rgb(0,0,0);">
+    <div class="container">
+        <div class="intro">
+            <h2 class="text-center">Cloud Storage Waiting List</h2>
+            <p class="text-center">We are constantly developing, our cloud storage is coming soon</p>
+        </div>
+        <form class="form-inline" method="post">
+            <div class="form-group"><input class="form-control" type="email" name="email" placeholder="Your Email">
+            </div>
+            <div class="form-group"><button class="btn" type="submit"
+                    style="background: #00e33f;color: rgb(255,255,255);">Subscribe </button></div>
+        </form>
+    </div>
+</section>
+<footer class="footer-basic" style="border-top-style: solid;border-top-color: var(--gray-dark);padding: 60px 0px;">
+    <div class="social"><a href="#"><i class="fab fa-instagram"></i></a><a href="#"><i class="fab fa-twitter"></i></a><a
+            href="#"><i class="fas fa-envelope"></i></a></div>
+    <ul class="list-inline">
+        <li class="list-inline-item"><a href="#">Home</a></li>
+        <li class="list-inline-item"><a href="#">Services</a></li>
+        <li class="list-inline-item"><a href="#">About</a></li>
+        <li class="list-inline-item"><a href="#">Terms</a></li>
+        <li class="list-inline-item"><a href="#">Privacy Policy</a></li>
+    </ul>
+    <p class="copyright">KontentKeep © 2024</p>
+</footer>
+<script src="../../static/bootstrap-studio/js/jquery.min.js"></script>
+<script src="../../static/bootstrap-studio/bootstrap/js/bootstrap.min.js"></script>
 
-{% endblock %}
+</html>
