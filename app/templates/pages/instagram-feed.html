@@ -27,7 +27,7 @@
                 </button>
 
                 <button hx-on:click="download()"
-                    class="block rounded-lg bg-indigo-600 px-5 py-3 text-sm font-medium text-white transition hover:bg-indigo-700 focus:outline-none focus:ring"
+                    class="block rounded-lg bg-green-400 px-5 py-3 text-sm font-medium text-white transition hover:bg-green-600 focus:outline-none focus:ring"
                     type="button">
                     Download
                 </button>
@@ -330,6 +330,7 @@
         ws.onclose = function (event) {
             document.getElementById("loading-bar").hidden = true
             window.open("/download-zip", "_blank");
+            removeAllImagesFromList()
         }
 
     }

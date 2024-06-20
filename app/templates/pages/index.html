@@ -4,7 +4,6 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>Kontent Keep | Home</title>
     <link rel="stylesheet" href="../../static/bootstrap-studio/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700">
     <link rel="stylesheet" href="../../static/bootstrap-studio/fonts/fontawesome-all.min.css">
@@ -16,23 +15,11 @@
     <link rel="stylesheet" href="../../static/bootstrap-studio/css/Navigation-Clean.css">
     <link rel="stylesheet" href="../../static/bootstrap-studio/css/Newsletter-Subscription-Form.css">
     <link rel="stylesheet" href="../../static/bootstrap-studio/css/styles.css">
+    <title>Kontent Keep | Home</title>
 </head>
 
 
-<nav class="navbar navbar-light navbar-expand-md navigation-clean">
-    <div class="container"><a class="navbar-brand" href="#"
-            style="background: #00e33f;padding: 5px 0px;padding-right: 4px;margin-right: 16px;color: rgb(0,0,0);padding-bottom: 0px;padding-top: 14px;padding-left: 34px;">KontentKeep</a><button
-            data-toggle="collapse" class="navbar-toggler" data-target="#navcol-1"><span class="sr-only">Toggle
-                navigation</span><span class="navbar-toggler-icon"></span></button>
-        <div class="collapse navbar-collapse" id="navcol-1">
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item"><a class="nav-link" href="#">How</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Cloud</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Login</a></li>
-            </ul><button class="btn btn-primary" type="button" style="background: rgb(0,0,0);">Get Started</button>
-        </div>
-    </div>
-</nav>
+{% include 'components/bootstrap-navbar.html' %}
 <div class="d-xl-flex align-items-xl-center highlight-clean"
     style="height: 500px;border-color: rgb(0,0,0);border-top-color: rgb(0,0,0);">
     <div class="container">
@@ -45,7 +32,7 @@
                 your feed</a><button class="btn btn-light" type="button">get Cloud storage</button></div>
     </div>
 </div>
-<div class="features-boxed" style="background: rgb(255,255,255);">
+<div id="how" class="features-boxed" style="background: rgb(255,255,255);">
     <div class="container">
         <div class="intro"></div>
         <div class="row justify-content-center features" style="border-top-style: solid;border-top-color: rgb(0,0,0);">
@@ -75,7 +62,7 @@
         </div>
     </div>
 </div>
-<section class="highlight-blue" style="background: rgb(0,0,0);padding: 70px 0px;">
+<section id="cloud" class="highlight-blue" style="background: rgb(0,0,0);padding: 70px 0px;">
     <div class="container">
         <div class="intro">
             <h2 class="text-center">Cloud Storage</h2>
