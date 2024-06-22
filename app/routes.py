@@ -39,7 +39,6 @@ async def instagram_auth(code: str):
     if env == "PROD":
         redirectUri = "https://kontentkloud.vercel.app/authorise-instagram/"
 
-    redirectUri = "https://localhost:8000/authorise-instagram/"  # must be identical to the redirect url in the instagram api
     instagram = Instagram(redirectUri=redirectUri, code=code)
 
     shortToken = instagram.get_token()
