@@ -289,7 +289,7 @@ def carousel_album_htmx(request: Request, media_id: str):
 def download_zip(request: Request, background_tasks: BackgroundTasks):
 
     userLongToken = request.cookies.get(LONG_TOKEN)
-    zipFileLocation = f"tmp/{userLongToken}.zip"
+    zipFileLocation = f"/tmp/{userLongToken}.zip"
 
     background_tasks.add_task(os.remove, zipFileLocation)
 
@@ -325,7 +325,7 @@ async def download_images_ws(websocket: WebSocket):
         links = data["links"]
         linksAmount = len(links)
 
-        tempImageFolder = f"tmp/{userLongToken}"
+        tempImageFolder = f"/tmp/{userLongToken}"
         createFolder(tempImageFolder)
 
         # notify the client that the download is starting and how many images are being downloaded
@@ -365,10 +365,7 @@ async def download_images_ws(websocket: WebSocket):
 
 @router.get("/download-images")
 async def download_images(
-    request: Request,
-    linksStr: str = None,
-    response: FileResponse = None,
-    background_tasks: BackgroundTasks = None,
+    request: Request, linksStr: str = None, response: FileResponse = None
 ):
 
     print("start: /download-images route")
@@ -384,7 +381,7 @@ async def download_images(
 
     print("downloading", links)
 
-    tempImageFolder = f"tmp/{userLongToken}"
+    tempImageFolder = f"/tmp/{userLongToken}"
     createFolder(tempImageFolder)
 
     for link in links:
@@ -412,12 +409,9 @@ async def download_images(
     # delete the folder containing the images
     deleteFolder(tempImageFolder)
 
-    userLongToken = request.cookies.get(LONG_TOKEN)
-    zipFileLocation = f"tmp/{userLongToken}.zip"
+    file = download_zip(request, BackgroundTasks())
 
-    background_tasks.add_task(os.remove, zipFileLocation)
-
-    return FileResponse(path=zipFileLocation, filename="instagram_images.zip")
+    return file
 
 
 @router.post("/auth/create-user", response_class=HTMLResponse)
