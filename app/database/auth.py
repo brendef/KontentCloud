@@ -1,4 +1,4 @@
-from lib.auth import validate_email, validate_password
+from app.lib.auth import validate_email, validate_password
 
 SUPABASE = "supabase"
 
@@ -20,7 +20,7 @@ class Auth:
 
         # this is dynamic, can add more services here
         if service == SUPABASE:
-            from models.supabase import Supabase
+            from app.models.supabase import Supabase
 
             self.auth = Supabase()
 

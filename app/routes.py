@@ -6,14 +6,14 @@ from fastapi import APIRouter, Request, WebSocket, BackgroundTasks, Header
 from fastapi.responses import RedirectResponse, HTMLResponse, FileResponse
 from fastapi.templating import Jinja2Templates
 
-from models.facebook import Instagram
-from lib.io import createFolder, zipFolder, deleteFolder
+from app.models.facebook import Instagram
+from app.lib.io import createFolder, zipFolder, deleteFolder
 
-from database.auth import Auth
-from database.database import Database
+from app.database.auth import Auth
+from app.database.database import Database
 
 router = APIRouter()  # init app router
-templates = Jinja2Templates(directory="templates")  # load html templates
+templates = Jinja2Templates(directory="app/templates")  # load html templates
 
 # Constants
 LONG_TOKEN = "longToken"

@@ -1,4 +1,4 @@
-from routes import router
+from app.routes import router
 from dotenv import load_dotenv
 
 from fastapi import FastAPI
@@ -12,7 +12,7 @@ def main():
     app.include_router(router)  # routes from the routes.py file
 
     # mount static files
-    app.mount("/static", StaticFiles(directory="static"), name="static")
+    app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
     # CORS
     app.add_middleware(

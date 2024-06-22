@@ -1,4 +1,4 @@
-from models.supabase import Supabase
+from app.models.supabase import Supabase
 
 
 class Database:
