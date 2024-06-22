@@ -46,3 +46,15 @@ class Supabase:
             raise Exception(e)
 
         return user
+
+    def insert(self, table: str, data: dict):
+
+        try:
+
+            response, count = self.supabase.table(table).insert(data).execute()
+            print(count)
+
+        except Exception as e:
+            raise Exception(e)
+
+        return response

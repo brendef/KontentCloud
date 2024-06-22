@@ -1,23 +1,12 @@
-SUPABASE = "supabase"
+from models.supabase import Supabase
 
 
 class Database:
 
-    def __init__(self, **kwargs):
+    def __init__(self):
 
-        service: str = None
+        self.database = Supabase()
 
-        if "service" in kwargs.keys():
-            service = kwargs["service"]
+    def insert(self, table: str, data: dict):
 
-        if service is None:
-            print("Database Service is None")
-            return None
-
-        # this is dynamic, can add more services here
-        if service == SUPABASE:
-            from models.supabase import Supabase
-
-            self.database = Supabase()
-
-        return self.database
+        return self.database.insert(table, data)

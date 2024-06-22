@@ -15,6 +15,11 @@
     <link rel="stylesheet" href="../../static/bootstrap-studio/css/Navigation-Clean.css">
     <link rel="stylesheet" href="../../static/bootstrap-studio/css/Newsletter-Subscription-Form.css">
     <link rel="stylesheet" href="../../static/bootstrap-studio/css/styles.css">
+
+
+    <script src="https://unpkg.com/htmx.org@1.9.12"></script> <!-- htmx -->
+    <script src="https://unpkg.com/htmx.org@1.9.12/dist/ext/response-targets.js"></script> <!-- htmx ext -->
+
     <title>Kontent Keep | Home</title>
 </head>
 
@@ -75,16 +80,18 @@
     </div>
 </section>
 <section class="newsletter-subscribe" style="padding: 80px 0px;border-top-color: rgb(0,0,0);">
-    <div class="container">
+    <div class="container" hx-ext="response-targets">
         <div class="intro">
             <h2 class="text-center">Cloud Storage Waiting List</h2>
             <p class="text-center">We are constantly developing, our cloud storage is coming soon</p>
         </div>
-        <form class="form-inline" method="post">
-            <div class="form-group"><input class="form-control" type="email" name="email" placeholder="Your Email">
+        <form hx-post="/join-waiting" hx-swap="outerHTML" hx-target-error="#errors" class="form-inline">
+            <div class="form-group">
+                <input class="form-control" type="email" name="email" placeholder="Your Email" />
+                <button class="btn" style="background: #00e33f;color: rgb(255,255,255);">
+                    Get Notified
+                </button>
             </div>
-            <div class="form-group"><button class="btn" type="submit"
-                    style="background: #00e33f;color: rgb(255,255,255);">Subscribe </button></div>
         </form>
     </div>
 </section>

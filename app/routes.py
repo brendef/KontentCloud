@@ -1,8 +1,8 @@
-import urllib, json, requests, os
+import json, requests, os, ast
 
 from datetime import datetime, timedelta, timezone
 
-from fastapi import APIRouter, Request, WebSocket, BackgroundTasks
+from fastapi import APIRouter, Request, WebSocket, BackgroundTasks, Header
 from fastapi.responses import RedirectResponse, HTMLResponse, FileResponse
 from fastapi.templating import Jinja2Templates
 
@@ -10,6 +10,7 @@ from models.facebook import Instagram
 from lib.io import createFolder, zipFolder, deleteFolder
 
 from database.auth import Auth
+from database.database import Database
 
 router = APIRouter()  # init app router
 templates = Jinja2Templates(directory="templates")  # load html templates
@@ -456,3 +457,27 @@ def logout():
     response.delete_cookie(key=JWT_TTL)
 
     return response
+
+
+@router.post("/join-waiting")
+async def join_waiting_htmx(request: Request):
+
+    database = Database()
+
+    form = await request.form()
+    email = form.get("email", "").lower().strip()
+
+    ipAddress = request.client.host
+
+    if email == "" or "@" not in email or "." not in email:
+        return HTMLResponse(
+            content="""<p class="flex text-center text-red-500">Please enter a valid email address</p>"""
+        )
+
+    response = database.insert(
+        "waiting_list", {"email_address": email, "ip_address": ipAddress}
+    )
+
+    return HTMLResponse(
+        content="""<p class="text-center text-green-500">Great! You will be notified when we add new features.</p>"""
+    )
