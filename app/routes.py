@@ -32,6 +32,13 @@ InstagramFeed = "/instagram-feed"
 @router.get("/authorise-instagram")
 async def instagram_auth(code: str):
 
+    env = os.getenv("ENV")
+
+    redirectUri = "http://localhost:8000/authorise-instagram/"
+
+    if env == "PROD":
+        redirectUri = "https://kontentkloud.vercel.app/authorise-instagram/"
+
     redirectUri = "https://localhost:8000/authorise-instagram/"  # must be identical to the redirect url in the instagram api
     instagram = Instagram(redirectUri=redirectUri, code=code)
 
@@ -88,7 +95,14 @@ def login_template(request: Request):
 @router.get("/home")
 def home_template(request: Request):
 
-    context = {"instagram_auth": False}
+    env = os.getenv("ENV")
+
+    redirectBase = "localhost:8000"
+
+    if env == "PROD":
+        redirectBase = "kontentkloud.vercel.app"
+
+    context = {"instagram_auth": False, "redirectBase": redirectBase}
 
     # get the cookie from the request
     cookieLongToken = request.cookies.get(LONG_TOKEN)
