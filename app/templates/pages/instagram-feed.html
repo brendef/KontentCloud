@@ -126,7 +126,7 @@
 
         {% if image.media_type == "VIDEO" %}
         <div id="{{ image.id }}" class="image border border-gray-200">
-            <video class="thumbnail aspect-square video" width="300" height="100">
+            <video playsinline class="thumbnail aspect-square video" width="300" height="100">
                 <source src="{{ image.media_url }}" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
