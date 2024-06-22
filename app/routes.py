@@ -34,7 +34,7 @@ async def instagram_auth(code: str):
 
     env = os.getenv("ENV")
 
-    redirectUri = "http://localhost:8000/authorise-instagram/"
+    redirectUri = "https://localhost:8000/authorise-instagram/"
 
     if env == "PROD":
         redirectUri = "https://kontentkloud.vercel.app/authorise-instagram/"
@@ -117,6 +117,8 @@ def home_template(request: Request):
 @router.get("/instagram-feed")
 def feed_template(request: Request):
 
+    serverType = os.getenv("SERVER_TYPE")
+
     # get the cookie from the request
     cookieLongToken = request.cookies.get(LONG_TOKEN)
 
@@ -127,7 +129,7 @@ def feed_template(request: Request):
     return templates.TemplateResponse(
         request=request,
         name="pages/instagram-feed.html",
-        context={"user": user, "feed": feed},
+        context={"user": user, "feed": feed, "serverType": serverType},
     )
 
 
@@ -295,11 +297,16 @@ def download_zip(request: Request, background_tasks: BackgroundTasks):
 
 
 @router.websocket("/download-images/ws")
-async def download_images(websocket: WebSocket):
+async def download_images_ws(websocket: WebSocket):
+
+    print("start /download-images/ws route")
+
     print("Websocket connection opened")
     await websocket.accept()
 
     userLongToken = websocket.cookies.get(LONG_TOKEN)
+
+    serverType = os.getenv("SERVER_TYPE")
 
     while True:
         jsonMessage = await websocket.receive_text()
@@ -354,6 +361,57 @@ async def download_images(websocket: WebSocket):
 
         await websocket.close()
         break
+
+
+@router.get("/download-images")
+def download_images(
+    request: Request, linksStr: str = None, response: FileResponse = None
+):
+
+    print("start: /download-images route")
+
+    userLongToken = request.cookies.get(LONG_TOKEN)
+
+    if linksStr is None:
+        return
+
+    print(linksStr)
+
+    links = linksStr.split(",")
+
+    print("downloading", links)
+
+    tempImageFolder = f"tmp/{userLongToken}"
+    createFolder(tempImageFolder)
+
+    for link in links:
+
+        filename: str = None
+
+        # download the image
+        response = requests.get(url=link, stream=True)
+
+        # get the first part of the link which will be used as the name of the file
+        extractedName = link.split("?")[0]
+        filename = os.path.join(tempImageFolder, os.path.basename(extractedName))
+
+        # there is no file extension in video links
+        if not ".jpg" in filename:
+            filename += ".mp4"
+
+        with open(filename, "wb") as file:
+            file.write(response.content)
+
+    # zip the folder containing all the downloaded images
+    responseZipFile = f"{tempImageFolder}.zip"
+    zipFolder(responseZipFile, tempImageFolder)
+
+    # delete the folder containing the images
+    deleteFolder(tempImageFolder)
+
+    file = download_zip(request, BackgroundTasks())
+
+    return file
 
 
 @router.post("/auth/create-user", response_class=HTMLResponse)

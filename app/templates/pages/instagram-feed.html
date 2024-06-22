@@ -312,6 +312,25 @@
 
     function download() {
 
+        if ("{{ serverType }}" !== "SERVERLESS") {
+            downloadWS()
+            return
+        }
+
+        console.log("downloading images from server :)")
+
+        document.getElementById("loading-bar").hidden = false
+        document.getElementById("total-to-download").innerText = selectedImages.length
+
+        window.open("/download-images?" + new URLSearchParams({ "linksStr": selectedImages }));
+
+        document.getElementById("loading-bar").hidden = true
+    }
+
+    function downloadWS() {
+
+        console.debug("opening websocket connection 🔥")
+
         var ws = new WebSocket("/download-images/ws");
 
         ws.onopen = function (event) {
