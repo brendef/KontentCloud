@@ -364,7 +364,7 @@ async def download_images_ws(websocket: WebSocket):
 
 
 @router.get("/download-images")
-def download_images(
+async def download_images(
     request: Request, linksStr: str = None, response: FileResponse = None
 ):
 
