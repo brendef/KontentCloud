@@ -310,10 +310,10 @@
         })
     }
 
-    function download() {
+    async function download() {
 
         if ("{{ serverType }}" !== "SERVERLESS") {
-            downloadWS()
+            await downloadWS()
             return
         }
 
