@@ -33,11 +33,11 @@ InstagramFeed = "/instagram-feed"
 async def instagram_auth(code: str):
 
     env = os.getenv("ENV")
-
-    redirectUri = "https://localhost:8000/authorise-instagram/"
+    baseUrl = os.getenv("BASE_URL_DEV")
 
     if env == "PROD":
-        redirectUri = "https://kontentkloud.vercel.app/authorise-instagram/"
+        baseUrl = os.getenv("BASE_URL_PROD")
+        redirectUri = f"https://{baseUrl}/authorise-instagram/"
 
     instagram = Instagram(redirectUri=redirectUri, code=code)
 
@@ -95,11 +95,13 @@ def login_template(request: Request):
 def home_template(request: Request):
 
     env = os.getenv("ENV")
+    baseUrl = os.getenv("BASE_URL_DEV")
 
-    redirectBase = "localhost:8000"
+    redirectBase = baseUrl
 
     if env == "PROD":
-        redirectBase = "kontentkloud.vercel.app"
+        baseUrl = os.getenv("BASE_URL_PROD")
+        redirectBase = baseUrl
 
     context = {"instagram_auth": False, "redirectBase": redirectBase}
 
