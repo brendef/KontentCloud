@@ -33,11 +33,8 @@ InstagramFeed = "/instagram-feed"
 async def instagram_auth(code: str):
 
     env = os.getenv("ENV")
-    baseUrl = os.getenv("BASE_URL_DEV")
-
-    if env == "PROD":
-        baseUrl = os.getenv("BASE_URL_PROD")
-        redirectUri = f"https://{baseUrl}/authorise-instagram/"
+    baseUrl = os.getenv(f"BASE_URL_{env}")
+    redirectUri = f"https://{baseUrl}/authorise-instagram/"
 
     instagram = Instagram(redirectUri=redirectUri, code=code)
 
@@ -95,15 +92,9 @@ def login_template(request: Request):
 def home_template(request: Request):
 
     env = os.getenv("ENV")
-    baseUrl = os.getenv("BASE_URL_DEV")
+    baseUrl = os.getenv(f"BASE_URL_{env}")
 
-    redirectBase = baseUrl
-
-    if env == "PROD":
-        baseUrl = os.getenv("BASE_URL_PROD")
-        redirectBase = baseUrl
-
-    context = {"instagram_auth": False, "redirectBase": redirectBase}
+    context = {"instagram_auth": False, "redirectBase": baseUrl}
 
     # get the cookie from the request
     cookieLongToken = request.cookies.get(LONG_TOKEN)
