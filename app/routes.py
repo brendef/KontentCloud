@@ -365,7 +365,10 @@ async def download_images_ws(websocket: WebSocket):
 
 @router.get("/download-images")
 async def download_images(
-    request: Request, linksStr: str = None, response: FileResponse = None
+    request: Request,
+    linksStr: str = None,
+    response: FileResponse = None,
+    background_tasks: BackgroundTasks = None,
 ):
 
     print("start: /download-images route")
@@ -409,9 +412,12 @@ async def download_images(
     # delete the folder containing the images
     deleteFolder(tempImageFolder)
 
-    file = download_zip(request, BackgroundTasks())
+    userLongToken = request.cookies.get(LONG_TOKEN)
+    zipFileLocation = f"tmp/{userLongToken}.zip"
 
-    return file
+    background_tasks.add_task(os.remove, zipFileLocation)
+
+    return FileResponse(path=zipFileLocation, filename="instagram_images.zip")
 
 
 @router.post("/auth/create-user", response_class=HTMLResponse)
