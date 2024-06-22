@@ -314,8 +314,9 @@
 
         if ("{{ serverType }}" !== "SERVERLESS") {
             await downloadWS()
-            return
         }
+        
+        if ("{{serverType}}" === "SERVERLESS") {
 
         console.log("downloading images from server :)")
 
@@ -323,7 +324,7 @@
         document.getElementById("total-to-download").innerText = selectedImages.length
 
         window.open("/download-images?" + new URLSearchParams({ "linksStr": selectedImages }));
-
+}
         document.getElementById("loading-bar").hidden = true
     }
 
