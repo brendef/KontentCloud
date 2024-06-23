@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <link rel="stylesheet" href="../../static/bootstrap-studio/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700">
+    <link rel="stylesheet" href="../../static/bootstrap-studio/fonts/fontawesome-all.min.css">
+    <link rel="stylesheet" href="../../static/bootstrap-studio/css/Features-Boxed.css">
+    <link rel="stylesheet" href="../../static/bootstrap-studio/css/Footer-Basic.css">
+    <link rel="stylesheet" href="../../static/bootstrap-studio/css/Header-Blue.css">
+    <link rel="stylesheet" href="../../static/bootstrap-studio/css/Highlight-Blue.css">
+    <link rel="stylesheet" href="../../static/bootstrap-studio/css/Highlight-Clean.css">
+    <link rel="stylesheet" href="../../static/bootstrap-studio/css/Navigation-Clean.css">
+    <link rel="stylesheet" href="../../static/bootstrap-studio/css/Newsletter-Subscription-Form.css">
+    <link rel="stylesheet" href="../../static/bootstrap-studio/css/styles.css">
+
+    <script src="https://unpkg.com/htmx.org@1.9.12"></script> <!-- htmx -->
+    <script src="https://unpkg.com/htmx.org@1.9.12/dist/ext/response-targets.js"></script> <!-- htmx ext -->
+
+    <link rel="icon" type="image/x-icon" href="/static/images/favicon.ico">
+    <title> {% block title %} {% endblock %} | Kontentcloud</title>
+</head>
+
+<body>
+    {% block content %}{% endblock %}
+</body>
+
+<script src="../../static/bootstrap-studio/js/jquery.min.js"></script>
+<script src="../../static/bootstrap-studio/bootstrap/js/bootstrap.min.js"></script>
+
+<script src="../../static/js/functions.js"></script>
+<script>
+    let jwt_ttl = readCookie("jwt_ttl");
+    if (jwt_ttl && (window.location.pathname === "/login" || window.location.pathname === "/signup")) {
+        window.location.href = "/home";
+    }
+</script>
+
+</html>

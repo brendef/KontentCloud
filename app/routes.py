@@ -538,10 +538,21 @@ async def join_waiting_htmx(request: Request):
             content="""<p class="flex text-center text-red-500">Please enter a valid email address</p>"""
         )
 
-    response = database.insert(
-        "waiting_list", {"email_address": email, "ip_address": ipAddress}
-    )
+    try:
+        database.insert(
+            "waiting_list", {"email_address": email, "ip_address": ipAddress}
+        )
+    except Exception as e:
+        print(e)
+        return HTMLResponse(
+            content="""<p class="text-center text-red-500">You already seem to be on the waiting list</p>"""
+        )
 
     return HTMLResponse(
         content="""<p class="text-center text-green-500">Great! You will be notified when we add new features.</p>"""
     )
+
+
+@router.get("/coming-soon")
+def coming_soon(request: Request):
+    return templates.TemplateResponse(request=request, name="pages/coming-soon.html")

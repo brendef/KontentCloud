@@ -1,0 +1,26 @@
+{% extends 'base/bootstrap-public.html' %}
+{% block title %} Coming Soon {% endblock %}
+
+{% block content %}
+
+<div class="m-5">
+    <div class="">
+        <a href="/"> Go back home</a>
+        <div>
+            <h1>Get Early Access</h1>
+            <p>Our cloud storage feature is still in development. Sign up to stay in the loop as our app develops, or
+                join
+                the
+                waiting list below.</p>
+        </div>
+    </div>
+    <div class="">
+        <form hx-post="/join-waiting">
+            <input type="email" name="email" hx-swap="outerHTML" hx-target-error="#errors"
+                placeholder="Enter your email">
+            <button>Sign up</button>
+        </form>
+    </div>
+</div>
+<div id="errors"></div>
+{% endblock %}
