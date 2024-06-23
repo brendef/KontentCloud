@@ -62,14 +62,16 @@
                     id="total-to-download"></span> images / videos </p>
         </div>
 
-        <!-- <button class="text-gray-500 transition hover:text-gray-600">
+        {% if serverType == "SERVERLESS" %}
+        <button hx-on:click="dismissPopup()" class="text-gray-500 transition hover:text-gray-600">
             <span class="sr-only">Dismiss popup</span>
 
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                 stroke="currentColor" class="h-6 w-6">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
-        </button> -->
+        </button>
+        {% endif %}
     </div>
 </div>
 
@@ -295,6 +297,11 @@
 
     }
 
+    function dismissPopup() {
+        document.getElementById("loading-bar").hidden = true
+        removeAllImagesFromList()
+    }
+
     async function removeAllImagesFromList() {
         selectedImages = []
         updateCountImageCountDisplay()
@@ -359,6 +366,7 @@
     function clearSelection() {
         removeAllImagesFromList()
         updateCountImageCountDisplay()
+        dismissPopup()
         selectAllBox.checked = false
     }
 
