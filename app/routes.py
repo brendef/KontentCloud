@@ -196,7 +196,7 @@ def feed_htmx(request: Request, nextUrl: str):
             htmlResponse += f"""
             <div id="{ image["id"] }" class="image border border-gray-200">
                 <video id="{image["id"]}" class="thumbnail aspect-square" width="500" height="100">
-                    <source src="{image["media_url"]}" type="video/mp4">
+                    <source src="{image["media_url"]}#t=0.1" type="video/mp4">
                     Your browser does not support the video tag.
                 </video> 
             </div>
