@@ -30,10 +30,16 @@
                     </div>
 
                     <div class="col-span-6">
-                        <label for="Password" class="block text-sm font-medium text-gray-700"> Password </label>
+                        <label class="block text-sm font-medium text-gray-700"> Password </label>
 
-                        <input type="password" id="Password" name="password"
+                        <input id="passwordInputBox" type="password" id="Password" name="password"
                             class="mt-1 w-full border-gray-300 border bg-white text-2xl text-gray-700" />
+
+                        <div class="flex justify-end">
+                            <button type="button" class="text-blue-500" hx-on:click="handleShowPassword()">
+                                Show Password
+                            </button>
+                        </div>
                     </div>
 
                     <div id="errors"></div>
@@ -59,5 +65,18 @@
         </aside>
     </div>
 </section>
+
+<script>
+
+    function handleShowPassword() {
+        const passwordInputBox = document.getElementById('passwordInputBox');
+        if (passwordInputBox.type === 'password') {
+            passwordInputBox.type = 'text';
+        } else {
+            passwordInputBox.type = 'password';
+        }
+    }
+
+</script>
 
 {% endblock %}

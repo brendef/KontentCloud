@@ -44,8 +44,15 @@
                     <div class="col-span-6 sm:col-span-3">
                         <label for="Password" class="block text-sm font-medium text-gray-700"> Password </label>
 
-                        <input type="password" id="Password" name="password"
+                        <input id="passwordInputBox" type="password" id="Password" name="password"
                             class="mt-1 w-full border-gray-300 border bg-white text-2xl text-gray-700" />
+
+
+                        <div class="flex justify-end">
+                            <button type="button" class="text-blue-500" hx-on:click="handleShowPassword()">
+                                Show Password
+                            </button>
+                        </div>
                     </div>
 
                     <div class="col-span-6 sm:col-span-3">
@@ -53,8 +60,15 @@
                             Password Confirmation
                         </label>
 
-                        <input type="password" id="confirmPassword" name="confirm_password"
+                        <input id="confirmPasswordInputBox" type="password" id="confirmPassword" name="confirm_password"
                             class="mt-1 w-full border-gray-300 border bg-white text-2xl text-gray-700" />
+
+
+                        <div class="flex justify-end">
+                            <button type="button" class="text-blue-500" hx-on:click="handleShowConfirmPassword()">
+                                Show Password
+                            </button>
+                        </div>
                     </div>
 
                     <div id="errors" class="col-span-6"></div>
@@ -83,6 +97,33 @@
         </main>
     </div>
 </section>
+
+
+<script src="../../static/js/functions.js"></script>
+<script>
+
+    function handleShowPassword() {
+        const password = document.getElementById('passwordInputBox');
+
+        if (password.type === 'password') {
+            password.type = 'text';
+        } else {
+            password.type = 'password';
+        }
+
+    }
+
+    function handleShowConfirmPassword() {
+        const confirmPassword = document.getElementById('confirmPasswordInputBox');
+
+        if (confirmPassword.type === 'password') {
+            confirmPassword.type = 'text';
+        } else {
+            confirmPassword.type = 'password';
+        }
+    }
+
+</script>
 
 
 {% endblock %}

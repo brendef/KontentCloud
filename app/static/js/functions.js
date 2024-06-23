@@ -18,3 +18,12 @@ function logout() {
     document.cookie = 'longToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC;';
     location.reload();
 }
+
+function togglePassword(element) {
+
+    if (element.type === 'password') {
+        element.type = 'text';
+    } else {
+        element.type = 'password';
+    }
+}

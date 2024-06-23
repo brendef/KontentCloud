@@ -233,7 +233,6 @@
         if (!e.target.checked) {
             await removeAllImagesFromList()
         }
-        console.log(selectedImages)
     })
 
     function updateCountImageCountDisplay() {
@@ -283,18 +282,6 @@
 
         updateCountImageCountDisplay()
 
-        /*
-            // get media 
-            fetch(`/get-instagram-media/${id}`).then((response) => {
-                return response.json()
-            }).then((data) => {
-                console.log(data)
-            })
-        */
-
-        console.log(selectedImages)
-
-
     }
 
     function dismissPopup() {
@@ -338,7 +325,7 @@
 
     function downloadWS() {
 
-        console.debug("opening websocket connection 🔥")
+        console.log("opening websocket connection 🔥")
 
         var ws = new WebSocket("/download-images/ws");
 
