@@ -26,11 +26,20 @@
                     </svg>
                 </button>
 
+                {% if serverType == "SERVERLESS" %}
                 <button hx-on:click="download()"
                     class="block rounded-lg bg-green-400 px-5 py-3 text-sm font-medium text-white transition hover:bg-green-600 focus:outline-none focus:ring"
                     type="button">
                     Download
                 </button>
+                {% else %}
+                <button hx-on:click="downloadWS()"
+                    class="block rounded-lg bg-green-400 px-5 py-3 text-sm font-medium text-white transition hover:bg-green-600 focus:outline-none focus:ring"
+                    type="button">
+                    Download
+                </button>
+                {% endif %}
+
             </div>
         </div>
     </div>
@@ -312,20 +321,12 @@
 
     async function download() {
 
-        if ("{{ serverType }}" !== "SERVERLESS") {
-            await downloadWS()
-        }
-        
-        if ("{{serverType}}" === "SERVERLESS") {
-
         console.log("downloading images from server :)")
 
         document.getElementById("loading-bar").hidden = false
         document.getElementById("total-to-download").innerText = selectedImages.length
 
         window.open("/download-images?" + new URLSearchParams({ "linksStr": selectedImages }));
-}
-        document.getElementById("loading-bar").hidden = true
     }
 
     function downloadWS() {
