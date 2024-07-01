@@ -632,3 +632,8 @@ async def delete_account(request: Request):
     response.headers.update({"HX-Redirect": "/"})
 
     return response
+
+
+@router.get("/how-to")
+def how_to(request: Request):
+    return templates.TemplateResponse(request=request, name="pages/how-to.html")
