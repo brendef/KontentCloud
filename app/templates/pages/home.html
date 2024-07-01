@@ -3,7 +3,10 @@
 
 {% block content %}
 
-<p class="mt-1.5 text-sm text-gray-500 text-right m-10 hover:underline"><a href="auth/logout/">logout</a></p>
+<div class="mx-5 flex gap-4 justify-end">
+    <p class="mt-1.5 text-sm text-gray-500 hover:underline"><a href="profile">profile</a></p>
+    <p class="mt-1.5 text-sm text-gray-500 hover:underline"><a href="auth/logout/">logout</a></p>
+</div>
 {% if instagram_auth == true %}
 
 <div class="flex flex-col items-center justify-center">

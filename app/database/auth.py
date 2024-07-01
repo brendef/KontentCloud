@@ -34,6 +34,13 @@ class Auth:
         ) > 0:
             raise Exception(f"Invalid password: {passwordMessage}")
 
+        r = self.auth.select(
+            "deleted_users", "email_address", {"email_address": email}, count="exact"
+        )
+
+        if r.count > 0:
+            raise Exception("User has been deleted")
+
         return self.auth.login(email, password)
 
     def signup(self, email: str, password: str, confirm_password: str):
@@ -49,6 +56,13 @@ class Auth:
         ) > 0:
             raise Exception(f"Invalid password: {passwordMessage}")
 
+        r = self.auth.select(
+            "deleted_users", "email_address", {"email_address": email}, count="exact"
+        )
+
+        if r.count > 0:
+            raise Exception("User has been deleted")
+
         return self.auth.signup(email, password)
 
     def logout(self, token: str):
@@ -61,3 +75,9 @@ class Auth:
 
     def reset_password(self, email: str):
         pass
+
+    def user(self, token: str):
+        return self.auth.getuser(token)
+
+    def delete_user(self, token: str):
+        return self.auth.delete_user(token)

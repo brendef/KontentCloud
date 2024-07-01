@@ -1,0 +1,108 @@
+{% extends 'base/public.html' %}
+{% block title %}Profile{% endblock %}
+{% block content %}
+
+{{ user["user"]["email"] }}
+
+<section class="text-gray-600 body-font overflow-hidden">
+    <div class="container px-5 py-24 mx-auto">
+        <a href="/home" class="text-blue-500"> Go back home</a>
+        <div class="my-8 divide-y-2 divide-gray-100">
+            <!-- <div class="py-8 flex flex-wrap md:flex-nowrap">
+                <div class="md:w-64 md:mb-0 mb-6 flex-shrink-0 flex flex-col">
+                    <span class="font-semibold title-font text-gray-700">CATEGORY</span>
+                    <span class="mt-1 text-gray-500 text-sm">12 Jun 2019</span>
+                </div>
+                <div class="md:flex-grow">
+                    <h2 class="text-2xl font-medium text-gray-900 title-font mb-2">Accounts</h2>
+                    <p class="leading-relaxed">Glossier echo park pug, church-key sartorial biodiesel vexillologist
+                        pop-up snackwave ramps cornhole. Marfa 3 wolf moon party messenger bag selfies, poke vaporware
+                        kombucha lumbersexual pork belly polaroid hoodie portland craft beer.</p>
+                    <a class="text-indigo-500 inline-flex items-center mt-4">Learn More
+                        <svg class="w-4 h-4 ml-2" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M5 12h14"></path>
+                            <path d="M12 5l7 7-7 7"></path>
+                        </svg>
+                    </a>
+                </div>
+            </div> -->
+            <div class="py-8 flex flex-wrap md:flex-nowrap">
+                <div class="md:w-64 md:mb-0 mb-6 flex-shrink-0 flex flex-col">
+                    <span class="font-semibold title-font text-gray-700">Profile</span>
+                </div>
+                <div class="md:flex-grow">
+                    <h2 class="text-2xl font-medium text-gray-900 title-font mb-2">Delete my data</h2>
+                    <p class="leading-relaxed">We don't really store much data but... incase you want your email off our
+                        "<b>New features list</b>"
+                    </p>
+                    <div class="my-5">
+                        <label for="deleteConfirm" class="block text-xs font-medium text-gray-700"> Enter "<b>Delete my
+                                data</b>" to continue</label>
+
+                        <input onkeyup="activateDeleteDataBtn(event)" type="text" id="deleteConfirm"
+                            placeholder="Delete my data"
+                            class="mt-1 w-full rounded-md border-gray-200 shadow-sm sm:text-sm" />
+                    </div>
+
+                    <button type="button" hx-confirm="Are you sure you wish to delete your data?"
+                        hx-post="/delete-user-data" hx-vals='{"email": "{{ user["user"]["email"] }}"}' disabled
+                        id="deleteDataBtn" class="text-indigo-500 inline-flex items-center mt-4">
+                        Delete data
+                    </button>
+                </div>
+            </div>
+            <div class="py-8 flex flex-wrap md:flex-nowrap">
+                <div class="md:w-64 md:mb-0 mb-6 flex-shrink-0 flex flex-col">
+                    <span class="font-semibold title-font text-gray-700">Account</span>
+                </div>
+                <div class="md:flex-grow">
+                    <h2 class="text-2xl font-medium text-gray-900 title-font mb-2">Delete my account</h2>
+                    <p class="leading-relaxed">Delete your entire KontentCloud account</p>
+
+                    <div class="my-5">
+                        <label for="deleteConfirm" class="block text-xs font-medium text-gray-700"> Enter "<b>Delete my
+                                account</b>" to continue</label>
+
+                        <input onkeyup="activateDeleteAccountBtn(event)" type="text" id="deleteConfirm"
+                            placeholder="Delete my account"
+                            class="mt-1 w-full rounded-md border-gray-200 shadow-sm sm:text-sm" />
+                    </div>
+
+                    <button hx-post="/delete-account" hx-vals='{"email": "{{ user["user"]["email"] }}"}' disabled
+                        id="deleteAccountBtn" class="text-indigo-500 inline-flex items-center mt-4">Delete
+                        account</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="../../static/js/functions.js"></script>
+<script>
+
+    const deleteDataBtn = document.getElementById('deleteDataBtn');
+    const deleteAccountBtn = document.getElementById('deleteAccountBtn');
+    const deleteConfirm = document.getElementById('deleteConfirm');
+
+    function activateDeleteDataBtn(e) {
+        if (e.target.value.toLowerCase() === 'delete my data') {
+            deleteDataBtn.disabled = false;
+        }
+        else {
+            deleteDataBtn.disabled = true;
+        }
+    }
+
+    function activateDeleteAccountBtn(e) {
+        if (e.target.value.toLowerCase() === 'delete my account') {
+            deleteAccountBtn.disabled = false;
+        }
+        else {
+            deleteAccountBtn.disabled = true;
+        }
+    } 
+</script>
+
+
+{% endblock %}

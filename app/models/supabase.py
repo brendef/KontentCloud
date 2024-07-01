@@ -58,3 +58,46 @@ class Supabase:
             raise Exception(e)
 
         return response
+
+    def delete_single(self, table: str, column: str, where: str):
+
+        try:
+            response, count = (
+                self.supabase.table(table).delete().eq(column, where).execute()
+            )
+
+            print(count)
+
+        except Exception as e:
+            raise Exception(e)
+
+        return response
+
+    def delete_user(self, token: str):
+
+        user = self.getuser(token)
+
+        try:
+            self.insert(
+                "deleted_users",
+                {"email_address": user.user.email, "user_id": user.user.id},
+            )
+        except Exception as e:
+            raise Exception(e)
+
+        return ""
+
+    def select(self, table: str, columns: str, where: dict, count: str = None):
+
+        try:
+            response = (
+                self.supabase.table(table)
+                .select(columns, count=count)
+                .match(where)
+                .execute()
+            )
+
+        except Exception as e:
+            raise Exception(e)
+
+        return response

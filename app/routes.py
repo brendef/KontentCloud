@@ -1,10 +1,13 @@
-import json, requests, os, ast
+import json, requests, os, urllib
 
 from datetime import datetime, timedelta, timezone
 
 from fastapi import APIRouter, Request, WebSocket, BackgroundTasks, Header
 from fastapi.responses import RedirectResponse, HTMLResponse, FileResponse
 from fastapi.templating import Jinja2Templates
+
+from pydantic import BaseModel
+
 
 from app.models.facebook import Instagram
 from app.lib.io import createFolder, zipFolder, deleteFolder
@@ -556,3 +559,76 @@ async def join_waiting_htmx(request: Request):
 @router.get("/coming-soon")
 def coming_soon(request: Request):
     return templates.TemplateResponse(request=request, name="pages/coming-soon.html")
+
+
+@router.get("/privacy-policy")
+def privacy_policy(request: Request):
+    return templates.TemplateResponse(request=request, name="pages/privacy-policy.html")
+
+
+@router.get("/tos")
+def terms_and_conditions(request: Request):
+    return templates.TemplateResponse(request=request, name="pages/tos.html")
+
+
+@router.get("/profile")
+async def user_profile_template(request: Request):
+
+    context = dict()
+
+    # get the cookie from the request
+    jwt = request.cookies.get(JWT)
+
+    auth = Auth(service="supabase")
+    user = auth.user(jwt)
+
+    if user is None:
+        return logout()
+
+    context["user"] = dict(user)
+
+    return templates.TemplateResponse(
+        request=request, name="pages/profile.html", context=context
+    )
+
+
+@router.post("/delete-user-data")
+async def delete_user_data(request: Request):
+
+    database = Database()
+
+    decoded_str = bytes(await request.body()).decode("utf-8")
+    parsed_data = urllib.parse.parse_qs(decoded_str)
+    body = {k: v[0] for k, v in parsed_data.items()}
+
+    if not body["email"]:
+        return "Something went wrong"
+
+    email = body["email"]
+
+    # delete user data from the waiting list
+    database.delete_single("waiting_list", "email_address", email)
+
+    return f"data deleted successfully"
+
+
+@router.post("/delete-account")
+async def delete_account(request: Request):
+
+    jwt = request.cookies.get(JWT)
+
+    auth = Auth(service="supabase")
+
+    try:
+        auth.delete_user(jwt)
+    except Exception as e:
+        print(e)
+        return HTMLResponse(
+            content="""<p class="text-center text-red-500">An error occured</p>"""
+        )
+
+    response = HTMLResponse()
+    response.status_code = 303
+    response.headers.update({"HX-Redirect": "/"})
+
+    return response
